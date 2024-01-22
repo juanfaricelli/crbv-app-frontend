@@ -7,7 +7,10 @@ const routes = [
     name: "home",
     path: "/home",
     meta: { needsAuth: true },
-    component: () => import("@/layouts/MainLayout.vue"),
+    components: {
+      default: () => import("@/layouts/MainLayout.vue"),
+      content: () => import("@/views/Home.vue"),
+    },
   },
   {
     path: "/patient/:patientId",
@@ -23,12 +26,30 @@ const routes = [
         name: "patient-info",
         meta: { needsAuth: true },
         components: {
-          content: () => import("@/views/patient/PatientInfo.vue")
+          content: () => import("@/views/patient/PatientInfo.vue"),
         },
         // // route level code-splitting
         // // this generates a separate chunk (Home-[hash].js) for this route
         // // which is lazy-loaded when the route is visited.
         // component: () => import("@/views/PatientView.vue"),
+      },
+      {
+        path: "/patient/new/:patientId?",
+        name: "patient-new",
+        meta: { needsAuth: true },
+        props: true,
+        components: {
+          content: () => import("@/views/patient/PatientDataForm.vue"),
+        },
+      },
+      {
+        path: "/patient/update/:patientId?/update=:update?",
+        name: "patient-update",
+        meta: { needsAuth: true },
+        props: true,
+        components: {
+          content: () => import("@/views/patient/PatientDataForm.vue"),
+        },
       },
     ],
   },

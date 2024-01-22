@@ -1,4 +1,3 @@
-import users from "@/store/endpoint/users";
 
 export default {
   namespaced: true,
@@ -18,7 +17,7 @@ export default {
       // TODO: request user info
       setTimeout(() => {
         context.commit("setAuth", true);
-      }, 1000)
+      }, 1000);
     },
     logout(context) {
       context.commit("setAuth", false);

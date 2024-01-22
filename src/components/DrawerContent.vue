@@ -1,7 +1,10 @@
 <template>
   <v-list>
     <v-list-item>
-      <v-container class="rounded-lg mb-6 drawer-content__container">
+      <v-container
+        class="rounded-lg mb-6 drawer-content__container"
+        @click="$router.push({ name: 'home' })"
+      >
         <v-row align="center" no-gutters class="drawer-content__row">
           <v-spacer></v-spacer>
           <v-col align-self="center" class="text-center">
@@ -19,6 +22,7 @@
         </v-row>
       </v-container>
       <v-text-field
+        class="mb-2"
         clearable
         label="ID Paciente"
         prepend-icon="$account"
@@ -26,8 +30,15 @@
         v-model="patientId"
         @keyup.enter="searchPatient"
       ></v-text-field>
-      <v-btn block class="drawer-content__btn--primary" @click="searchPatient">
+      <v-btn
+        block
+        class="drawer-content__btn--primary mb-2"
+        @click="searchPatient"
+      >
         Buscar Paciente
+      </v-btn>
+      <v-btn block class="drawer-content__btn--primary" @click="newPatientForm">
+        Nuevo Paciente
       </v-btn>
     </v-list-item>
   </v-list>
@@ -44,12 +55,12 @@ export default {
   },
   methods: {
     ...mapActions({
-      setComponentLoading: 'app/setComponentLoading',
-      getPatientById: 'patients/getPatientById',
-      setPatientIdSearched: 'patients/setPatientIdSearched',
+      setComponentLoading: "app/setComponentLoading",
+      getPatientById: "patients/getPatientById",
+      setPatientIdSearched: "patients/setPatientIdSearched",
     }),
     searchPatient() {
-      const { patientId } = this
+      const { patientId } = this;
       if (this.patientId !== "") {
         this.setComponentLoading(true);
         this.getPatientById(patientId);
@@ -60,6 +71,12 @@ export default {
         });
       }
     },
+    newPatientForm() {
+      this.patientId = "";
+      this.setPatientIdSearched('');
+      this.$store.commit("patients/PATIENT_DATA_UPDATED", '');
+      this.$router.push({ name: "patient-new" });
+    },
   },
 };
 </script>
@@ -67,6 +84,7 @@ export default {
 <style lang="scss" scoped>
 .drawer-content {
   &__container {
+    cursor: pointer;
     background-color: #a0a7ac;
   }
   &__row {

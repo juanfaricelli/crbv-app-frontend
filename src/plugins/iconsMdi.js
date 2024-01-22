@@ -1,7 +1,8 @@
-import { mdiAccount, mdiEye, mdiEyeOff } from "@mdi/js";
+import { mdiAccount, mdiEye, mdiEyeOff, mdiInformationOutline } from "@mdi/js";
 
 export default {
   account: mdiAccount,
   eye: mdiEye,
-  'eye-off': mdiEyeOff,
+  "eye-off": mdiEyeOff,
+  info: mdiInformationOutline,
 };

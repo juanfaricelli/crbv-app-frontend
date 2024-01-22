@@ -4,6 +4,7 @@ export default {
     return {
       isAppLoading: false,
       isComponentLoading: false,
+      isFetching: false,
     };
   },
   mutations: {
@@ -12,6 +13,15 @@ export default {
     },
     setComponentLoading(state, isComponentLoading) {
       state.isComponentLoading = isComponentLoading;
+    },
+    IS_APP_LOADING_UPDATED(state, isAppLoading) {
+      state.isAppLoading = isAppLoading;
+    },
+    IS_COMPONENT_LOADING_UPDATED(state, isComponentLoading) {
+      state.isComponentLoading = isComponentLoading;
+    },
+    IS_FETCHING_UPDATED(state, isFetching) {
+      state.isFetching = isFetching;
     },
   },
   actions: {
@@ -30,6 +40,9 @@ export default {
         !context.getters.getComponentLoadingState
       );
     },
+    setIsFetchingState(context, isFetching) {
+      context.commit("IS_FETCHING_UPDATED", isFetching);
+    },
   },
   getters: {
     getAppLoadingState(state) {
@@ -37,6 +50,9 @@ export default {
     },
     getComponentLoadingState(state) {
       return state.isComponentLoading;
+    },
+    getIsFetchingState(state) {
+      return state.isFetching;
     },
   },
 };

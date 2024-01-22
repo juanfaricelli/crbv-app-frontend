@@ -4,7 +4,9 @@
     :title="
       isComponentLoading
         ? 'Cargando datos del paciente...'
-        : (patientData.first_name ? `Datos del Paciente: ${patientData.first_name} ${patientData.last_name}` : '')
+        : patientData && patientData.first_name
+        ? `Datos del Paciente: ${patientData.first_name} ${patientData.last_name}`
+        : ''
     "
   >
     <v-card-text class="bg-surface-variant">
@@ -17,7 +19,7 @@
           </v-row>
         </v-container>
       </template>
-      <template v-if="!isComponentLoading && parsedPatientInfoHasData">
+      <template v-if="!isComponentLoading && patientExists">
         <v-container class="bg-surface-variant">
           <v-row no-gutters>
             <v-col>
@@ -32,11 +34,24 @@
               <PatientInfoTable :patientInfo="patientInfo.column2" />
             </v-col>
           </v-row>
+          <v-row no-gutters>
+            <v-col>
+              <v-btn class="ma-2 w-100" @click="goToPatientUpdate">
+                Modificar datos
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-container>
       </template>
-      <template v-if="!isComponentLoading && !parsedPatientInfoHasData">
-        <h3 class="mb-6">Paciente con ID {{ patientIdSearched }} no encontrado</h3>
-        <v-btn block class="drawer-content__btn--primary" @click="showAlert">
+      <template v-if="!isComponentLoading && !patientExists">
+        <h3 class="mb-6">
+          Paciente con ID {{ patientIdSearched }} no encontrado
+        </h3>
+        <v-btn
+          block
+          class="drawer-content__btn--primary"
+          @click="goToPatientNewForm"
+        >
           ¿Crear Paciente?
         </v-btn>
       </template>
@@ -63,6 +78,7 @@ export default {
   },
   computed: {
     ...mapState({
+      isFetching: (state) => state.app.isFetching,
       isComponentLoading: (state) => state.app.isComponentLoading,
       patientData: (state) => state.patients.patientData,
     }),
@@ -70,8 +86,8 @@ export default {
       parsedPatientInfo: "patients/getParsedPatientInfo",
       patientIdSearched: "patients/getPatientIdSearched",
     }),
-    parsedPatientInfoHasData() {
-      return this.parsedPatientInfo.length > 0
+    patientExists() {
+      return this.patientData && this.patientData.id_number;
     },
     showMobile() {
       const { sm } = this.$vuetify.display;
@@ -83,40 +99,43 @@ export default {
       setComponentLoading: "app/setComponentLoading",
     }),
     setParsedPatientInfo() {
-      this.setComponentLoading(true);
       this.patientInfo = {
         column1: [],
         column2: [],
       };
-      if (this.parsedPatientInfo.length > 0) {
+      if (this.parsedPatientInfo && this.parsedPatientInfo.length > 0) {
         const midIndex = Math.ceil(this.parsedPatientInfo.length / 2);
         this.patientInfo = {
           column1: this.parsedPatientInfo.slice(0, midIndex),
           column2: this.parsedPatientInfo.slice(
-            midIndex + 1,
+            midIndex,
             this.parsedPatientInfo.length
           ),
         };
-      } else {
-        this.patientInfo = {
-          column1: [],
-          column2: [],
-        };
       }
-      this.setComponentLoading(false);
     },
-    showAlert() {
-      alert('goTo Create Patient');
+    goToPatientNewForm() {
+      this.$router.push({
+        name: "patient-new",
+        params: { patientId: this.patientIdSearched },
+      });
     },
-  },
-  created() {
-    this.setComponentLoading(true);
+    goToPatientUpdate() {
+      this.$router.push({
+        name: "patient-update",
+        params: { patientId: this.patientData.id_number, update: true },
+      });
+    },
   },
   watch: {
-    parsedPatientInfo: {
+    isFetching: {
       immediate: true,
       handler(value) {
-        this.setParsedPatientInfo();
+        this.setComponentLoading(true);
+        if (!value) {
+          this.setParsedPatientInfo();
+          this.setComponentLoading(false);
+        }
       },
     },
   },
