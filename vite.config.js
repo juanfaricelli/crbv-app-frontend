@@ -1,12 +1,16 @@
 // Plugins
-import vue from '@vitejs/plugin-vue'
-import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
-import ViteFonts from 'unplugin-fonts/vite'
+import vue from "@vitejs/plugin-vue";
+import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
+import ViteFonts from "unplugin-fonts/vite";
 import basicSsl from "@vitejs/plugin-basic-ssl";
+import dotenv from "dotenv";
+
+const env = process.env.NODE_ENV || "development";
+dotenv.config({ path: `.env.${env}` });
 
 // Utilities
-import { defineConfig } from 'vite'
-import { fileURLToPath, URL } from 'node:url'
+import { defineConfig } from "vite";
+import { fileURLToPath, URL } from "node:url";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -30,7 +34,12 @@ export default defineConfig({
     }),
     basicSsl(),
   ],
-  define: { "process.env": {} },
+  define: {
+    "process.env": {
+      APP_API: JSON.stringify(process.env.APP_API_URL),
+      NODE_ENV: JSON.stringify(process.env.APP_ENVIRONMENT),
+    },
+  },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
@@ -41,7 +50,12 @@ export default defineConfig({
     host: "crbv-app.local.com",
     port: 3000,
     proxy: {
-      "/api": "https://crbv-app-backend.onrender.com/",
+      "/api": {
+        target: process.env.APP_API_URL,
+        changeOrigin: true,
+        // TODO: review this
+        secure: ["local", "development"].includes(process.env.APP_ENVIRONMENT), // Disable SSL verification
+      },
     },
   },
 });

@@ -9,6 +9,7 @@ export const helperMethods = {
   },
   methods: {
     dateParser(dateValue, update) {
+      return '';
       let dateParts = dateValue.split("T");
       dateParts = dateParts[0].split("-");
       return update
