@@ -62,10 +62,11 @@ export default {
       login: 'auth/login',
     }),
     loginValidation() {
+      // check validity
       // if (this.valid) {
         this.setAppLoading(true);
-        this.login();
-
+        this.login({ username: this.username, password: this.password });
+        this.setAppLoading(false);
       // }
     },
   },

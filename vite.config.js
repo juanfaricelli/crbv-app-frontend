@@ -12,6 +12,19 @@ dotenv.config({ path: `.env.${env}` });
 import { defineConfig } from "vite";
 import { fileURLToPath, URL } from "node:url";
 
+const proxy = process.env.NODE_HTTPS === "true"
+  ? {
+      "/api": {
+        target: process.env.APP_API_URL_HTTPS,
+        changeOrigin: true,
+        // TODO: review this
+        secure: true, // Disable SSL verification
+      },
+    }
+  : {
+      "/api": process.env.APP_API_URL,
+    };
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -38,6 +51,7 @@ export default defineConfig({
     "process.env": {
       APP_API: JSON.stringify(process.env.APP_API_URL),
       NODE_ENV: JSON.stringify(process.env.APP_ENVIRONMENT),
+      APP_SECRET_KEY: process.env.APP_SECRET_KEY,
     },
   },
   resolve: {
@@ -49,13 +63,6 @@ export default defineConfig({
   server: {
     host: "crbv-app.local.com",
     port: 3000,
-    proxy: {
-      "/api": {
-        target: process.env.APP_API_URL,
-        changeOrigin: true,
-        // TODO: review this
-        secure: ["local", "development"].includes(process.env.APP_ENVIRONMENT), // Disable SSL verification
-      },
-    },
+    proxy,
   },
 });

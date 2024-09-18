@@ -1,4 +1,4 @@
-import { mapState, mapActions } from "vuex";
+import { mapState } from "vuex";
 
 export const helperMethods = {
   computed: {
@@ -9,7 +9,6 @@ export const helperMethods = {
   },
   methods: {
     dateParser(dateValue, update) {
-      return '';
       let dateParts = dateValue.split("T");
       dateParts = dateParts[0].split("-");
       return update

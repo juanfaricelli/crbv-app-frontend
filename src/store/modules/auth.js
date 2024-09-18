@@ -1,3 +1,4 @@
+import auth from "@/store/endpoints/auth";
 
 export default {
   namespaced: true,
@@ -13,11 +14,19 @@ export default {
   },
   actions: {
     // context is a default param
-    login(context) {
-      // TODO: request user info
-      setTimeout(() => {
-        context.commit("setAuth", true);
-      }, 1000);
+    login(context, logInInformation) {
+      auth
+        .login(logInInformation)
+        .then(() => {
+          // set userType here?
+          // check validity of loginData
+          context.commit("setAuth", true);
+        })
+        .catch((error) => {
+          // check validity of loginData
+          console.error("Login failed:", error);
+          context.commit("setAuth", false);
+        });
     },
     logout(context) {
       context.commit("setAuth", false);
