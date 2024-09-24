@@ -86,6 +86,7 @@ export default {
       this.$router.push({ name: "patient-new" });
     },
     logout() {
+      // TODO imrpove this
       if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
         this.logoutAction();
         this.$router.push({ name: "login" });
