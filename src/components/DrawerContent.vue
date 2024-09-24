@@ -37,8 +37,15 @@
       >
         Buscar Paciente
       </v-btn>
-      <v-btn block class="drawer-content__btn--primary" @click="newPatientForm">
+      <v-btn
+        block
+        class="drawer-content__btn--primary mb-2"
+        @click="newPatientForm"
+      >
         Nuevo Paciente
+      </v-btn>
+      <v-btn block class="drawer-content__btn--primary" @click="logout">
+        Cerrar Sesión
       </v-btn>
     </v-list-item>
   </v-list>
@@ -58,6 +65,7 @@ export default {
       setComponentLoading: "app/setComponentLoading",
       getPatientById: "patients/getPatientById",
       setPatientIdSearched: "patients/setPatientIdSearched",
+      logoutAction: "auth/logout",
     }),
     searchPatient() {
       const { patientId } = this;
@@ -73,9 +81,15 @@ export default {
     },
     newPatientForm() {
       this.patientId = "";
-      this.setPatientIdSearched('');
-      this.$store.commit("patients/PATIENT_DATA_UPDATED", '');
+      this.setPatientIdSearched("");
+      this.$store.commit("patients/PATIENT_DATA_UPDATED", "");
       this.$router.push({ name: "patient-new" });
+    },
+    logout() {
+      if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
+        this.logoutAction();
+        this.$router.push({ name: "login" });
+      }
     },
   },
 };

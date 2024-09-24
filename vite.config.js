@@ -12,18 +12,19 @@ dotenv.config({ path: `.env.${env}` });
 import { defineConfig } from "vite";
 import { fileURLToPath, URL } from "node:url";
 
-const proxy = process.env.NODE_HTTPS === "true"
-  ? {
-      "/api": {
-        target: process.env.APP_API_URL_HTTPS,
-        changeOrigin: true,
-        // TODO: review this
-        secure: true, // Disable SSL verification
-      },
-    }
-  : {
-      "/api": process.env.APP_API_URL,
-    };
+const proxy =
+  process.env.NODE_HTTPS === "true"
+    ? {
+        "/api": {
+          target: process.env.APP_API_URL_HTTPS,
+          changeOrigin: true,
+          // TODO: review this
+          secure: process.env.NODE_ENV !== 'local', // Disable SSL verification
+        },
+      }
+    : {
+        "/api": process.env.APP_API_URL,
+      };
 
 // https://vitejs.dev/config/
 export default defineConfig({

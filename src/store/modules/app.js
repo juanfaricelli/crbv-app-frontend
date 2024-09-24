@@ -5,6 +5,7 @@ export default {
       isAppLoading: false,
       isComponentLoading: false,
       isFetching: false,
+      serverUnavailable: false,
     };
   },
   mutations: {
@@ -22,6 +23,9 @@ export default {
     },
     IS_FETCHING_UPDATED(state, isFetching) {
       state.isFetching = isFetching;
+    },
+    SERVER_UNAVAILABLE(state, serverUnavailable) {
+      state.serverUnavailable = serverUnavailable;
     },
   },
   actions: {
@@ -43,6 +47,9 @@ export default {
     setIsFetchingState(context, isFetching) {
       context.commit("IS_FETCHING_UPDATED", isFetching);
     },
+    setServerUnavailable(context, serverUnavailable) {
+      context.commit("SERVER_UNAVAILABLE", serverUnavailable);
+    },
   },
   getters: {
     getAppLoadingState(state) {
@@ -54,5 +61,8 @@ export default {
     getIsFetchingState(state) {
       return state.isFetching;
     },
+    getServerUnavailable(state) {
+      return state.serverUnavailable;
+    }
   },
 };
