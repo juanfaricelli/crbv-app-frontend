@@ -1,5 +1,3 @@
-import CONSTANTS from "@/constants";
-
 export default {
   async getPatientById(userId) {
     try {
@@ -20,9 +18,9 @@ export default {
   async getPatientNewForm() {
     try {
       const route = "/api/user/patient/new";
-      const patientNewForm = await fetch(`${route}`).then((response) =>
+      const patientNewForm = await fetch(`${route}`).then((response) =>{
         response.json()
-      );
+      });
       return patientNewForm;
     } catch (error) {
       console.error(error);

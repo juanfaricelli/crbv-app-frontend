@@ -1,4 +1,4 @@
-import patients from "@/store/endpoint/patients";
+import patients from "@/store/endpoints/patients";
 import router from "@/router";
 
 export default {

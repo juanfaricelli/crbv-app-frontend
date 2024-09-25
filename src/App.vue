@@ -8,17 +8,14 @@
         :size="60"
       ></v-progress-circular>
     </v-overlay>
-    <v-expand-transition
-      name="enter-main-layout"
-      mode="out-in"
-    >
+    <v-expand-transition name="enter-main-layout" mode="out-in">
       <MainLayout v-if="isAuthenticated" />
     </v-expand-transition>
   </v-app>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import LogInLayout from "@/layouts/LogInLayout.vue";
 import MainLayout from "./layouts/MainLayout.vue";
 
@@ -38,6 +35,16 @@ export default {
       isAppLoading: (state) => state.app.isAppLoading,
       isAuthenticated: (state) => state.auth.isAuthenticated,
     }),
+  },
+  created() {
+    const token = localStorage.getItem("sessionToken");
+    if (token) {
+      this.preseveToken(token);
+    }
+  },
+  render: (h) => h(App),
+  methods: {
+    ...mapActions("auth", ["preseveToken"]),
   },
 };
 </script>

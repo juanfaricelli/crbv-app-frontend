@@ -1,12 +1,30 @@
 // Plugins
-import vue from '@vitejs/plugin-vue'
-import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
-import ViteFonts from 'unplugin-fonts/vite'
+import vue from "@vitejs/plugin-vue";
+import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
+import ViteFonts from "unplugin-fonts/vite";
 import basicSsl from "@vitejs/plugin-basic-ssl";
+import dotenv from "dotenv";
+
+const env = process.env.NODE_ENV || "development";
+dotenv.config({ path: `.env.${env}` });
 
 // Utilities
-import { defineConfig } from 'vite'
-import { fileURLToPath, URL } from 'node:url'
+import { defineConfig } from "vite";
+import { fileURLToPath, URL } from "node:url";
+
+const proxy =
+  process.env.NODE_HTTPS === "true"
+    ? {
+        "/api": {
+          target: process.env.APP_API_URL_HTTPS,
+          changeOrigin: true,
+          // TODO: review this
+          secure: process.env.NODE_ENV !== 'local', // Disable SSL verification
+        },
+      }
+    : {
+        "/api": process.env.APP_API_URL,
+      };
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -30,7 +48,13 @@ export default defineConfig({
     }),
     basicSsl(),
   ],
-  define: { "process.env": {} },
+  define: {
+    "process.env": {
+      APP_API: JSON.stringify(process.env.APP_API_URL),
+      NODE_ENV: JSON.stringify(process.env.APP_ENVIRONMENT),
+      APP_SECRET_KEY: process.env.APP_SECRET_KEY,
+    },
+  },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
@@ -40,8 +64,6 @@ export default defineConfig({
   server: {
     host: "crbv-app.local.com",
     port: 3000,
-    proxy: {
-      "/api": "https://crbv-app-backend.onrender.com/",
-    },
+    proxy,
   },
 });

@@ -2,6 +2,53 @@
   <v-main>
     <v-sheet height="350" width="300" class="mx-auto mt-15">
       <v-form v-model="valid" @submit.prevent>
+        <table>
+          <tr>
+            <td>juanTest01</td>
+            <td>juanTest01</td>
+            <td>
+              <v-btn @click="fillCredentials('juanTest01', 'juanTest01')"
+                >Action</v-btn
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>juanTest100</td>
+            <td>123qweQWE</td>
+            <td>
+              <v-btn @click="fillCredentials('juanTest100', '123qweQWE')"
+                >Action</v-btn
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>juanTest101</td>
+            <td>123qweQWE</td>
+            <td>
+              <v-btn @click="fillCredentials('juanTest101', '123qweQWE')"
+                >Action</v-btn
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>juanTest102</td>
+            <td>123qweQWE</td>
+            <td>
+              <v-btn @click="fillCredentials('juanTest102', '123qweQWE')"
+                >Action</v-btn
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>juanTest103</td>
+            <td>123qweQWE</td>
+            <td>
+              <v-btn @click="fillCredentials('juanTest103', '123qweQWE')"
+                >Action</v-btn
+              >
+            </td>
+          </tr>
+        </table>
         <v-text-field
           v-model="username"
           label="Username or email"
@@ -25,13 +72,29 @@
           @click="loginValidation"
           >Log In</v-btn
         >
+        <v-alert
+          v-if="authError"
+          closable
+          icon="$error"
+          text="Incorrect or wrong username or password."
+          type="error"
+          variant="tonal"
+        ></v-alert>
+        <v-alert
+          v-if="serverUnavailable"
+          closable
+          icon="$error"
+          text="Internal Server Error: Server is unavailable."
+          type="error"
+          variant="tonal"
+        ></v-alert>
       </v-form>
     </v-sheet>
   </v-main>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from "vuex";
 export default {
   name: "LoginForm",
   data: () => ({
@@ -42,8 +105,7 @@ export default {
     usernameRules: [
       (value) => {
         if (value?.length > 3) return true;
-
-        return "Incorrect or wrong username.";
+        return "Required.";
       },
     ],
     passwordRules: {
@@ -54,19 +116,28 @@ export default {
   computed: {
     ...mapState({
       isAuthenticated: (state) => state.auth.isAuthenticated,
-    })
+    }),
+    ...mapGetters({
+      authError: "auth/getAuthError",
+      serverUnavailable: "app/getServerUnavailable",
+    }),
   },
   methods: {
     ...mapActions({
-      setAppLoading: 'app/setAppLoading',
-      login: 'auth/login',
+      setAppLoading: "app/setAppLoading",
+      login: "auth/login",
     }),
     loginValidation() {
-      // if (this.valid) {
+      // check validity
+      if (this.username && this.password) {
         this.setAppLoading(true);
-        this.login();
-
-      // }
+        this.login({ username: this.username, password: this.password });
+        this.setAppLoading(false);
+      }
+    },
+    fillCredentials(username, password) {
+      this.username = username;
+      this.password = password;
     },
   },
   watch: {
@@ -81,7 +152,7 @@ export default {
         }
       },
     },
-  }
+  },
 };
 </script>
 
