@@ -12,6 +12,9 @@ dotenv.config({ path: `.env.${env}` });
 import { defineConfig } from "vite";
 import { fileURLToPath, URL } from "node:url";
 
+const host = ["development", "local"].includes(process.env.APP_ENVIRONMENT)
+  ? `crbv-app.${process.env.APP_ENVIRONMENT}.com`
+  : "crbv-app-frontend.onrender.com";
 const proxy =
   process.env.NODE_HTTPS === "true"
     ? {
@@ -24,7 +27,17 @@ const proxy =
       }
     : {
         "/api": process.env.APP_API_URL,
-      };
+    };
+const server = ["development", "local"].includes(process.env.APP_ENVIRONMENT)
+  ? {
+      host,
+      port: 3000,
+      proxy,
+    }
+    : {
+      port: process.env.PORT,
+      proxy,
+    };
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -61,9 +74,5 @@ export default defineConfig({
     },
     extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
   },
-  server: {
-    host: "crbv-app.local.com",
-    port: 3000,
-    proxy,
-  },
+  server,
 });
