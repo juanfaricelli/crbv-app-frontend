@@ -6,6 +6,7 @@ export default {
     return {
       isAuthenticated: false,
       authError: false,
+      token: null,
     };
   },
   mutations: {
@@ -14,6 +15,12 @@ export default {
     },
     AUTH_LOGIN_ERROR(state, authError) {
       state.authError = authError;
+    },
+    SET_TOKEN(state, token) {
+      state.token = token;
+    },
+    CLEAR_TOKEN(state) {
+      state.token = null;
     },
   },
   actions: {
@@ -32,6 +39,9 @@ export default {
           context.commit("app/SERVER_UNAVAILABLE", data.code === 500, {
             root: true,
           });
+          const token = data.token;
+          context.commit("SET_TOKEN", token);
+          localStorage.setItem("sessionToken", token);
         })
         .catch((error) => {
           console.error("Login at modules failed with error:", error);
@@ -40,8 +50,17 @@ export default {
     },
     logout(context) {
       auth.logout();
+      localStorage.removeItem("sessionToken");
+      context.commit("CLEAR_TOKEN");
       context.commit("setAuth", false);
     },
+    preseveToken(context) {
+      const token = localStorage.getItem("sessionToken");
+      if (token) {
+        context.commit("SET_TOKEN", token);
+        context.commit("setAuth", true);
+      }
+    }
   },
   getters: {
     getIsAuthenticated(state) {
