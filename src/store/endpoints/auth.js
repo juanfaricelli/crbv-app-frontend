@@ -58,9 +58,6 @@ export default {
       } catch (parseError) {
         console.error("Failed to parse error message as JSON:", parseError);
       }
-      // const parsedError = JSON.parse(error.message);
-      // console.error(`Login request failed with Error`, parsedError);
-      // return { error: "Login request failed", parsedError };
     }
   },
   async logout() {
