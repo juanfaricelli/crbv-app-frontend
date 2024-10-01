@@ -1,7 +1,12 @@
+const domainConfig =
+  process.env.NODE_ENV === "production"
+    ? "https://crbv-app-backend.onrender.com"
+    : "";
+
 export default {
   async getPatientById(userId) {
     try {
-      const route = "/api/user/patient";
+      const route = `${domainConfig}/api/user/patient`;
       const patientData = await fetch(`${route}/${userId}`).then((response) =>
         response.json()
       );
@@ -17,9 +22,9 @@ export default {
   },
   async getPatientNewForm() {
     try {
-      const route = "/api/user/patient/new";
-      const patientNewForm = await fetch(`${route}`).then((response) =>{
-        response.json()
+      const route = `${domainConfig}/api/user/patient/new`;
+      const patientNewForm = await fetch(`${route}`).then((response) => {
+        response.json();
       });
       return patientNewForm;
     } catch (error) {
@@ -29,7 +34,7 @@ export default {
   },
   async createNewPatient(newPatientData) {
     try {
-      const route = "/api/user/patient/create";
+      const route = `${domainConfig}/api/user/patient/create`;
       const patientNew = await fetch(route, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
@@ -53,7 +58,7 @@ export default {
   },
   async updatePatient(updatedPatientData) {
     try {
-      const route = `/api/user/patient/${updatedPatientData.id_number}/update`;
+      const route = `${domainConfig}/api/user/patient/${updatedPatientData.id_number}/update`;
       const patientUpdated = await fetch(route, {
         method: "PUT", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin

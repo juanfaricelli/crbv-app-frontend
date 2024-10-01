@@ -12,33 +12,41 @@ dotenv.config({ path: `.env.${env}` });
 import { defineConfig } from "vite";
 import { fileURLToPath, URL } from "node:url";
 
-const host = ["development", "local"].includes(process.env.APP_ENVIRONMENT)
-  ? `crbv-app.${process.env.APP_ENVIRONMENT}.com`
-  : "crbv-app-frontend.onrender.com";
-const proxy =
-  process.env.NODE_HTTPS === "true"
-    ? {
-        "/api": {
-          target: process.env.APP_API_URL_HTTPS,
-          changeOrigin: true,
-          // TODO: review this
-          secure: process.env.NODE_ENV !== 'local', // Disable SSL verification
-        },
-      }
-    : {
-        "/api": process.env.APP_API_URL,
-    };
-const server = ["development", "local"].includes(process.env.APP_ENVIRONMENT)
-  ? {
-      host,
-      port: 3000,
-      proxy,
-    }
-    : {
-      port: process.env.PORT,
-      proxy,
-    };
+const host = `crbv-app.${process.env.NODE_ENV}.com`;
 
+const targetLocal =
+  process.env.NODE_HTTPS === "true"
+    ? `${process.env.APP_API_URL_HTTPS}:${process.env.APP_API_PORT}`
+    : `${process.env.APP_API_URL}:${process.env.APP_API_PORT}`;
+const proxyLocal = {
+  "/api": {
+    target: ["local", "development"].includes(process.env.NODE_ENV)
+      ? targetLocal
+      : process.env.APP_API_URL_HTTPS,
+    changeOrigin: true,
+    // TODO: review this
+    secure: process.env.NODE_HTTPS === "true", // Disable SSL verification
+  },
+};
+const proxy = {
+  "/api": "https://crbv-app-backend.onrender.com/",
+};
+
+const serverLocal = {
+  host,
+  port: process.env.PORT || 3000,
+  proxy: process.env.NODE_ENV === "development" ? proxy : proxyLocal,
+};
+const serverProd = {
+  https: process.env.NODE_HTTPS === "true",
+  port: process.env.PORT || 3000,
+  proxy: process.env.NODE_HTTPS === "true" ? proxy : proxyLocal,
+};
+const server = ["local", "development"].includes(process.env.NODE_ENV)
+  ? serverLocal
+  : serverProd;
+
+console.log("Server configs", server);
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [

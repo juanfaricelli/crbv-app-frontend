@@ -1,9 +1,14 @@
 import { encrypt } from "@/helpers/encoderHelper";
 
+const domainConfig =
+  process.env.NODE_ENV === "production"
+    ? "https://crbv-app-backend.onrender.com"
+    : "";
+
 export default {
   async getPatientById(userId) {
     try {
-      const route = "/api/user/patient";
+      const route = `${domainConfig}/api/user/patient`;
       const patientData = await fetch(`${route}/${userId}`).then((response) =>
         response.json()
       );
@@ -19,7 +24,7 @@ export default {
   },
   async login(logInInformation) {
     try {
-      const route = "/api/auth/login";
+      const route = `${domainConfig}/api/auth/login`;
       const requestBody = {
         body: encrypt(JSON.stringify(logInInformation)),
       };
@@ -62,7 +67,7 @@ export default {
   },
   async logout() {
     try {
-      const route = "/api/auth/logout";
+      const route = `${domainConfig}/api/auth/logout`;
       const response = await fetch(route, {
         method: "POST",
         headers: {
