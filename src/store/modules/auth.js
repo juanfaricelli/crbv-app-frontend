@@ -6,7 +6,7 @@ export default {
     return {
       isAuthenticated: false,
       userAuthType: null,
-      userProfile: null,
+      userNickname: null,
       authError: false,
       token: null,
       isAdministrator: false,
@@ -35,8 +35,8 @@ export default {
       state.isDoctor = userAuthType === "doctor";
       state.isPatient = userAuthType === "patient";
     },
-    SET_USER_PROFILE(state, userProfile) {
-      state.userProfile = userProfile;
+    SET_USER_NICKNAME(state, userNickname) {
+      state.userNickname = userNickname;
     },
   },
   actions: {
@@ -52,7 +52,7 @@ export default {
         .then((data) => {
           context.commit("SET_AUTH", data.authenticated || false);
           context.commit("SET_AUTH_TYPE", data.user.user_type || null);
-          context.commit("SET_USER_PROFILE", data.user.username || null);
+          context.commit("SET_USER_NICKNAME", data.user.username || null);
           context.commit("SET_TOKEN", data.token || null);
           localStorage.setItem("sessionToken", data.token || null);
 
@@ -68,7 +68,7 @@ export default {
           console.error("Login at modules failed with error:", error);
           context.commit("SET_AUTH", false);
           context.commit("SET_AUTH_TYPE", null);
-          context.commit("SET_USER_PROFILE", null);
+          context.commit("SET_USER_NICKNAME", null);
           context.commit("SET_TOKEN", null);
           localStorage.setItem("sessionToken", null);
         });
@@ -96,6 +96,21 @@ export default {
     },
     getUserAuthType(state) {
       return state.userAuthType;
+    },
+    getUserNickname(state) {
+      return state.userNickname;
+    },
+    getIsAdministrator(state) {
+      return state.isAdministrator;
+    },
+    getIsStaff(state) {
+      return state.isStaff;
+    },
+    getIsDoctor(state) {
+      return state.isDoctor;
+    },
+    getIsPatient(state) {
+      return state.isPatient;
     },
   },
 };

@@ -44,6 +44,41 @@
       >
         Nuevo Paciente
       </v-btn>
+      <v-btn
+        v-if="isAdminOrDoctor"
+        block
+        class="drawer-content__btn--primary mb-2"
+        @click="showAlert"
+      >
+        Ver HC
+      </v-btn>
+      <v-btn
+        v-if="isAdminOrStaff"
+        block
+        class="drawer-content__btn--primary mb-2"
+        @click="showAlert"
+      >
+        Ver Turnos
+      </v-btn>
+      <v-btn block class="drawer-content__btn--primary mb-2" @click="showAlert">
+        Nuevo Turno
+      </v-btn>
+      <v-btn
+        v-if="isAdminOrStaff"
+        block
+        class="drawer-content__btn--primary mb-2"
+        @click="showAlert"
+      >
+        Estadisticas
+      </v-btn>
+      <v-btn
+        v-if="isAdminOrDoctor"
+        block
+        class="drawer-content__btn--primary mb-2"
+        @click="showAlert"
+      >
+        Listar Turnos
+      </v-btn>
       <v-btn block class="drawer-content__btn--primary" @click="logout">
         Cerrar Sesión
       </v-btn>
@@ -52,13 +87,26 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "DrawerContainer",
   data() {
     return {
       patientId: "",
     };
+  },
+  computed: {
+    ...mapGetters({
+      isAdmin: "auth/getIsAdministrator",
+      isDoctor: "auth/getIsDoctor",
+      isStaff: "auth/getIsStaff",
+    }),
+    isAdminOrStaff() {
+      return this.isAdmin || this.isStaff;
+    },
+    isAdminOrDoctor() {
+      return this.isAdmin || this.isDoctor;
+    },
   },
   methods: {
     ...mapActions({
@@ -84,6 +132,9 @@ export default {
       this.setPatientIdSearched("");
       this.$store.commit("patients/PATIENT_DATA_UPDATED", "");
       this.$router.push({ name: "patient-new" });
+    },
+    showAlert() {
+      alert("Alerta de prueba");
     },
     logout() {
       // TODO imrpove this
