@@ -35,7 +35,7 @@ export default {
       state.isDoctor = userAuthType === "doctor";
       state.isPatient = userAuthType === "patient";
     },
-    SET_USER_NICKNAME(state, userNickname) {
+    SET_USERNAME(state, userNickname) {
       state.userNickname = userNickname;
     },
   },
@@ -51,10 +51,14 @@ export default {
         .login(logInInformation)
         .then((data) => {
           context.commit("SET_AUTH", data.authenticated || false);
-          context.commit("SET_AUTH_TYPE", data.user.user_type || null);
-          context.commit("SET_USER_NICKNAME", data.user.username || null);
-          context.commit("SET_TOKEN", data.token || null);
-          localStorage.setItem("sessionToken", data.token || null);
+          if (data.user) {
+            context.commit("SET_AUTH_TYPE", data.user.user_type);
+            context.commit("SET_USERNAME", data.user.username);
+            context.commit("SET_TOKEN", data.token);
+            localStorage.setItem("sessionToken", data.token);
+            localStorage.setItem("userType", data.user.user_type);
+            localStorage.setItem("username", data.user.username);
+          }
 
           context.commit("AUTH_LOGIN_ERROR", [403, 404].includes(data.code));
           context.dispatch("app/setServerUnavailable", data.code === 500, {
@@ -68,7 +72,7 @@ export default {
           console.error("Login at modules failed with error:", error);
           context.commit("SET_AUTH", false);
           context.commit("SET_AUTH_TYPE", null);
-          context.commit("SET_USER_NICKNAME", null);
+          context.commit("SET_USERNAME", null);
           context.commit("SET_TOKEN", null);
           localStorage.setItem("sessionToken", null);
         });
@@ -81,11 +85,17 @@ export default {
     },
     preseveToken(context) {
       const token = localStorage.getItem("sessionToken");
-      if (!["undefined", null].includes(token)) {
+      if (!["undefined", 'null', null].includes(token)) {
         context.commit("SET_TOKEN", token);
         context.commit("SET_AUTH", true);
       }
     },
+    setUserType(context, userType) {
+      context.commit("SET_AUTH_TYPE", userType);
+    },
+    setUsername(context, username) {
+      context.commit("SET_USERNAME", username);
+    }
   },
   getters: {
     getIsAuthenticated(state) {

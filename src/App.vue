@@ -38,13 +38,17 @@ export default {
   },
   created() {
     const token = localStorage.getItem("sessionToken");
+    const userType = localStorage.getItem("userType");
+    const username = localStorage.getItem("username");
     if (token) {
       this.preseveToken(token);
+      this.setUserType(userType);
+      this.setUsername(username);
     }
   },
   render: (h) => h(App),
   methods: {
-    ...mapActions("auth", ["preseveToken"]),
+    ...mapActions("auth", ["preseveToken", "setUserType", "setUsername"]),
   },
 };
 </script>
