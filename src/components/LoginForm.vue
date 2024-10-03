@@ -69,9 +69,16 @@
           color="primary"
           prepend-icon="$account"
           class="mt-2"
+          :loading="isComponentLoading"
           @click="loginValidation"
           >Log In</v-btn
         >
+        <v-progress-linear
+          v-if="isComponentLoading"
+          indeterminate
+          color="primary"
+          class="mt-2"
+        />
         <v-alert
           v-if="authError"
           closable
@@ -120,19 +127,21 @@ export default {
     ...mapGetters({
       authError: "auth/getAuthError",
       serverUnavailable: "app/getServerUnavailable",
+      isComponentLoading: "app/getComponentLoadingState",
+
     }),
   },
   methods: {
     ...mapActions({
       setAppLoading: "app/setAppLoading",
       login: "auth/login",
+      setComponentLoading: "app/setComponentLoading",
     }),
     loginValidation() {
       // check validity
       if (this.username && this.password) {
-        this.setAppLoading(true);
+        this.setComponentLoading(true);
         this.login({ username: this.username, password: this.password });
-        this.setAppLoading(false);
       }
     },
     fillCredentials(username, password) {
@@ -144,7 +153,6 @@ export default {
     isAuthenticated: {
       immediate: true,
       handler(value) {
-        this.setAppLoading(false);
         if (value) {
           this.$router.push({ name: "home" });
         } else {

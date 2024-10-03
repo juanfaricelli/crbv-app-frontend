@@ -10,7 +10,7 @@ export default {
     };
   },
   mutations: {
-    setAuth(state, isAuthenticated) {
+    SET_AUTH(state, isAuthenticated) {
       state.isAuthenticated = isAuthenticated;
     },
     AUTH_LOGIN_ERROR(state, authError) {
@@ -26,41 +26,45 @@ export default {
   actions: {
     // context is a default param
     login(context, logInInformation) {
-      context.commit("setAuth", false);
+      context.commit("SET_AUTH", false);
       context.commit("AUTH_LOGIN_ERROR", false);
-      context.commit("app/SERVER_UNAVAILABLE", false, {
+      context.dispatch("app/setServerUnavailable", false, {
         root: true,
       });
       auth
         .login(logInInformation)
         .then((data) => {
-          context.commit("setAuth", data.authenticated || false);
+          context.commit("SET_AUTH", data.authenticated || false);
           context.commit("AUTH_LOGIN_ERROR", [403, 404].includes(data.code));
-          context.commit("app/SERVER_UNAVAILABLE", data.code === 500, {
+          context.dispatch("app/setServerUnavailable", data.code === 500, {
             root: true,
           });
+          context.dispatch("app/setComponentLoading", false, {
+            root: true,
+          });
+
           const token = data.token;
           context.commit("SET_TOKEN", token);
           localStorage.setItem("sessionToken", token);
         })
         .catch((error) => {
           console.error("Login at modules failed with error:", error);
-          context.commit("setAuth", false);
+          context.commit("SET_AUTH", false);
         });
     },
     logout(context) {
       auth.logout();
       localStorage.removeItem("sessionToken");
       context.commit("CLEAR_TOKEN");
-      context.commit("setAuth", false);
+      context.commit("SET_AUTH", false);
     },
     preseveToken(context) {
       const token = localStorage.getItem("sessionToken");
-      if (token) {
+      if (!["undefined", null].includes(token)) {
         context.commit("SET_TOKEN", token);
-        context.commit("setAuth", true);
+        context.commit("SET_AUTH", true);
       }
-    }
+    },
   },
   getters: {
     getIsAuthenticated(state) {

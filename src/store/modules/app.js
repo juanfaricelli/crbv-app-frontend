@@ -9,12 +9,6 @@ export default {
     };
   },
   mutations: {
-    setAppLoading(state, isAppLoading) {
-      state.isAppLoading = isAppLoading;
-    },
-    setComponentLoading(state, isComponentLoading) {
-      state.isComponentLoading = isComponentLoading;
-    },
     IS_APP_LOADING_UPDATED(state, isAppLoading) {
       state.isAppLoading = isAppLoading;
     },
@@ -30,19 +24,10 @@ export default {
   },
   actions: {
     setAppLoading(context, isAppLoading) {
-      context.commit("setAppLoading", isAppLoading);
-    },
-    toogleAppLoading(context) {
-      context.commit("setAppLoading", !context.getters.getAppLoadingState);
+      context.commit("IS_APP_LOADING_UPDATED", isAppLoading);
     },
     setComponentLoading(context, isComponentLoading) {
-      context.commit("setComponentLoading", isComponentLoading);
-    },
-    toogleComponentLoading(context) {
-      context.commit(
-        "setComponentLoading",
-        !context.getters.getComponentLoadingState
-      );
+      context.commit("IS_COMPONENT_LOADING_UPDATED", isComponentLoading);
     },
     setIsFetchingState(context, isFetching) {
       context.commit("IS_FETCHING_UPDATED", isFetching);
