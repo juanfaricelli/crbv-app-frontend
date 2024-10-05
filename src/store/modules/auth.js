@@ -13,6 +13,7 @@ export default {
       isStaff: false,
       isDoctor: false,
       isPatient: false,
+      sessionId: null,
     };
   },
   mutations: {
@@ -25,8 +26,22 @@ export default {
     SET_TOKEN(state, token) {
       state.token = token;
     },
-    CLEAR_TOKEN(state) {
+    SET_SESSION_ID(state, sessionId) {
+      state.sessionId = sessionId;
+    },
+    CLEAR_SESSION(state) {
       state.token = null;
+      state.isAuthenticated = null;
+      state.isAdministrator = false;
+      state.userNickname = null;
+      state.userAuthType = null;
+      state.isStaff = false;
+      state.isDoctor = false;
+      state.isPatient = false;
+      localStorage.removeItem("sessionToken");
+      localStorage.removeItem("sessionId");
+      localStorage.removeItem("userType");
+      localStorage.removeItem("username");
     },
     SET_AUTH_TYPE(state, userAuthType) {
       state.userAuthType = userAuthType;
@@ -55,7 +70,9 @@ export default {
             context.commit("SET_AUTH_TYPE", data.user.user_type);
             context.commit("SET_USERNAME", data.user.username);
             context.commit("SET_TOKEN", data.token);
+            context.commit("SET_SESSION_ID", data.token);
             localStorage.setItem("sessionToken", data.token);
+            localStorage.setItem("sessionId", data.session_id);
             localStorage.setItem("userType", data.user.user_type);
             localStorage.setItem("username", data.user.username);
           }
@@ -70,23 +87,19 @@ export default {
         })
         .catch((error) => {
           console.error("Login at modules failed with error:", error);
-          context.commit("SET_AUTH", false);
-          context.commit("SET_AUTH_TYPE", null);
-          context.commit("SET_USERNAME", null);
-          context.commit("SET_TOKEN", null);
-          localStorage.setItem("sessionToken", null);
+          context.commit("CLEAR_SESSION");
         });
     },
     logout(context) {
       auth.logout();
-      localStorage.removeItem("sessionToken");
-      context.commit("CLEAR_TOKEN");
-      context.commit("SET_AUTH", false);
+      context.commit("CLEAR_SESSION");
     },
     preseveToken(context) {
       const token = localStorage.getItem("sessionToken");
-      if (!["undefined", 'null', null].includes(token)) {
+      const sessionId = localStorage.getItem("sessionId");
+      if (!["undefined", "null", null].includes(token)) {
         context.commit("SET_TOKEN", token);
+        context.commit("SET_SESSION_ID", sessionId);
         context.commit("SET_AUTH", true);
       }
     },
@@ -95,7 +108,7 @@ export default {
     },
     setUsername(context, username) {
       context.commit("SET_USERNAME", username);
-    }
+    },
   },
   getters: {
     getIsAuthenticated(state) {

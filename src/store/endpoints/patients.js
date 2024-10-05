@@ -3,12 +3,26 @@ const domainConfig =
     ? "https://crbv-app-backend.onrender.com"
     : "";
 
+let sessionId = "";
+let Authorization = "";
+let getPayload = {};
+const setSessionToken = () => {
+  sessionId = localStorage.getItem("sessionId") || "";
+  Authorization = `Bearer ${sessionId}`;
+  getPayload = {
+    method: "GET",
+    headers: {
+      Authorization,
+    },
+  };
+};
+
 export default {
   async getPatientById(userId) {
     try {
       const route = `${domainConfig}/api/user/patient`;
-      const patientData = await fetch(`${route}/${userId}`).then((response) =>
-        response.json()
+      const patientData = await fetch(`${route}/${userId}`, getPayload).then(
+        (response) => response.json()
       );
       return patientData.length > 0
         ? Object.assign({}, patientData[0].user_data, {
@@ -22,10 +36,13 @@ export default {
   },
   async getPatientNewForm() {
     try {
+      setSessionToken();
       const route = `${domainConfig}/api/user/patient/new`;
-      const patientNewForm = await fetch(`${route}`).then((response) => {
-        response.json();
-      });
+      const patientNewForm = await fetch(`${route}`, getPayload).then(
+        (response) => {
+          response.json();
+        }
+      );
       return patientNewForm;
     } catch (error) {
       console.error(error);
@@ -34,6 +51,7 @@ export default {
   },
   async createNewPatient(newPatientData) {
     try {
+      setSessionToken();
       const route = `${domainConfig}/api/user/patient/create`;
       const patientNew = await fetch(route, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -42,7 +60,7 @@ export default {
         credentials: "same-origin", // include, *same-origin, omit
         headers: {
           "Content-Type": "application/json",
-          // 'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization,
         },
         redirect: "follow", // manual, *follow, error
         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -58,6 +76,7 @@ export default {
   },
   async updatePatient(updatedPatientData) {
     try {
+      setSessionToken();
       const route = `${domainConfig}/api/user/patient/${updatedPatientData.id_number}/update`;
       const patientUpdated = await fetch(route, {
         method: "PUT", // *GET, POST, PUT, DELETE, etc.
@@ -66,7 +85,7 @@ export default {
         credentials: "same-origin", // include, *same-origin, omit
         headers: {
           "Content-Type": "application/json",
-          // 'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization,
         },
         redirect: "follow", // manual, *follow, error
         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url

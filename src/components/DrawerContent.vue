@@ -137,11 +137,8 @@ export default {
       alert("Alerta de prueba");
     },
     logout() {
-      // TODO imrpove this
-      if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-        this.logoutAction();
-        this.$router.push({ name: "login" });
-      }
+      this.logoutAction();
+      this.$router.push({ name: "login" });
     },
   },
 };

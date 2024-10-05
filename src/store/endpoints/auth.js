@@ -4,24 +4,10 @@ const domainConfig =
   process.env.NODE_ENV === "production"
     ? "https://crbv-app-backend.onrender.com"
     : "";
+const sessionToken = localStorage.getItem("sessionToken") || "";
+const Authorization = `Bearer ${sessionToken}`;
 
 export default {
-  async getPatientById(userId) {
-    try {
-      const route = `${domainConfig}/api/user/patient`;
-      const patientData = await fetch(`${route}/${userId}`).then((response) =>
-        response.json()
-      );
-      return patientData.length > 0
-        ? Object.assign({}, patientData[0].user_data, {
-            medical_record: patientData[0].medical_record,
-          })
-        : null;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  },
   async login(logInInformation) {
     try {
       const route = `${domainConfig}/api/auth/login`;
@@ -72,6 +58,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization,
         },
       });
 
