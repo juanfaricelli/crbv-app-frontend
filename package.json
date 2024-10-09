@@ -33,6 +33,7 @@
     "eslint-plugin-vue": "^9.3.0",
     "sass": "^1.69.5",
     "vite": "^4.2.0",
+    "vite-plugin-vue-devtools": "^7.4.6",
     "vite-plugin-vuetify": "^1.0.0"
   }
 }

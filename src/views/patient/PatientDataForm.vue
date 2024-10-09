@@ -133,11 +133,11 @@ export default {
   computed: {
     ...mapState({
       isComponentLoading: (state) => state.app.isComponentLoading,
-      patientNewFormFields: (state) => state.patients.patientNewFormFields,
       patientData: (state) => state.patients.patientData,
     }),
     ...mapGetters({
       patientIdSearched: "patients/getPatientIdSearched",
+      patientNewFormFields: "patients/getPatientNewFormFields",
     }),
     locationOptions() {
       return this.locationOptionsStatic;
@@ -149,7 +149,6 @@ export default {
   methods: {
     ...mapActions({
       setComponentLoading: "app/setComponentLoading",
-      getPatientNewForm: "patients/getPatientNewForm",
       createPatient: "patients/createPatient",
       updatePatient: "patients/updatePatient",
     }),

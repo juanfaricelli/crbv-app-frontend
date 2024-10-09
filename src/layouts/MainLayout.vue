@@ -9,7 +9,7 @@
       <v-toolbar-title
         class="main-layout__header text-right justify-center me-15"
       >
-        <h1 class="font-weight-bold text-h2 text-basil">Clinica Regional</h1>
+        <h1 class="font-weight-bold text-h2 text-basil">Clinica Regional Privada</h1>
         <div class="main-layout__header-divider">
           <v-divider
             :thickness="5"

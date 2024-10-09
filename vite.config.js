@@ -1,6 +1,7 @@
 // Plugins
 import vue from "@vitejs/plugin-vue";
 import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
+import vueDevTools from "vite-plugin-vue-devtools";
 import ViteFonts from "unplugin-fonts/vite";
 import basicSsl from "@vitejs/plugin-basic-ssl";
 import dotenv from "dotenv";
@@ -68,6 +69,7 @@ export default defineConfig({
       },
     }),
     basicSsl(),
+    vueDevTools(),
   ],
   define: {
     "process.env": {

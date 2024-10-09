@@ -40,7 +40,7 @@ export default {
       const route = `${domainConfig}/api/user/patient/new`;
       const patientNewForm = await fetch(`${route}`, getPayload).then(
         (response) => {
-          response.json();
+          return response.json();
         }
       );
       return patientNewForm;

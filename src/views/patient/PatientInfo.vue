@@ -9,9 +9,9 @@
         : ''
     "
   >
-    <v-card-text class="bg-surface-variant">
+    <v-card-text class="patient-info__bg-color">
       <template v-if="isComponentLoading">
-        <v-container class="bg-surface-variant">
+        <v-container class="patient-info__bg-color">
           <v-row no-gutters>
             <v-col>
               <PatientInfoTable />
@@ -20,7 +20,7 @@
         </v-container>
       </template>
       <template v-if="!isComponentLoading && patientExists">
-        <v-container class="bg-surface-variant">
+        <v-container class="patient-info__bg-color">
           <v-row no-gutters>
             <v-col>
               <PatientInfoTable :patientInfo="patientInfo.column1" />
@@ -143,4 +143,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.patient-info__bg-color {
+  background-color: #7693BA
+;
+}
 </style>
