@@ -107,4 +107,9 @@ Check vite.config.js . For more information check [Configuration Reference](http
   </div>
 </div>
 
-Check other palettes generated at [My Color Space](https://mycolor.space/?hex=%239EBBE4&sub=1).
+Check other palettes generated at 
+[My Color Space](https://mycolor.space/?hex=%239EBBE4&sub=1).
+[Another variant](https://mycolor.space/?hex=%23D7DEE3&sub=1).
+
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/957cda20-cd39-4c28-9d5c-5d5f4c0dd57a">
+[coolors.co](https://coolors.co/d7dee3-2589bd-187795-38686a-a27e8e)
