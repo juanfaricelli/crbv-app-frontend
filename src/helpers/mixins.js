@@ -1,4 +1,6 @@
 import { mapState } from "vuex";
+import { genderParser } from "./genderParser";
+import { maritalStatusParser } from "./maritalStatusParser";
 
 export const helperMethods = {
   computed: {
@@ -15,94 +17,11 @@ export const helperMethods = {
         ? `${dateParts[0]}-${dateParts[1]}-${dateParts[1]}`
         : `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
     },
-    genderParser(genderValue) {
-      if (typeof genderValue === "string") {
-        switch (genderValue) {
-          case "male":
-          case "Hombre":
-            return "Hombre";
-          case "female":
-          case "Mujer":
-            return "Mujer";
-          case "nonbinary":
-          case "No Binario":
-            return "No Binario";
-          case "transgender":
-          case "Transgenero":
-            return "Transgenero";
-          case "other":
-          case "Prefiero no decir/Otros":
-            return "Prefiero no decir/Otros";
-          default:
-            break;
-        }
-      } else {
-        const truthyValue = Object.entries(genderValue).find((valuePair) => {
-          if (valuePair[1]) return valuePair;
-        });
-        switch (truthyValue[0]) {
-          case "male":
-            return "Hombre";
-          case "female":
-            return "Mujer";
-          case "nonbinary":
-            return "No Binario";
-          case "transgender":
-            return "Transgenero";
-          case "other":
-            return "Prefiero no decir/Otros";
-          default:
-            break;
-        }
-      }
+    genderParser(genderValue, update) {
+      return genderParser(genderValue, update)
     },
-    maritalStatusParser(maritalStatusValue) {
-      if (typeof maritalStatusValue === "string") {
-        switch (maritalStatusValue) {
-          case "single":
-          case "Soltero/a":
-            return "Soltero/a";
-          case "married":
-          case "Casado/a":
-            return "Casado/a";
-          case "divorced":
-          case "Divorciado/a":
-            return "Divorciado/a";
-          case "widowed":
-          case "Viudo/a":
-            return "Viudo/a";
-          case "cohabiting":
-          case "Concubinato":
-            return "Concubinato";
-          case "civil_union":
-          case "Union Civil":
-            return "Union Civil";
-          default:
-            break;
-        }
-      } else {
-        const truthyValue = Object.entries(maritalStatusValue).find(
-          (valuePair) => {
-            if (valuePair[1]) return valuePair;
-          }
-        );
-        switch (truthyValue[0]) {
-          case "single":
-            return "Soltero/a";
-          case "married":
-            return "Casado/a";
-          case "divorced":
-            return "Divorciado/a";
-          case "widowed":
-            return "Viudo/a";
-          case "cohabiting":
-            return "Concubinato";
-          case "civil_union":
-            return "Union Civil";
-          default:
-            break;
-        }
-      }
+    maritalStatusParser(maritalStatusValue, update) {
+      return maritalStatusParser(maritalStatusValue, update);
     },
     locationParser(item) {
       const selectedProvince = this.patientNewFormFields.province.options.find(

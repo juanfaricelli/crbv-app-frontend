@@ -1,5 +1,7 @@
 import patients from "@/store/endpoints/patients";
 import router from "@/router";
+import { genderParser } from "@/helpers/genderParser";
+import { maritalStatusParser } from "@/helpers/maritalStatusParser";
 
 export default {
   namespaced: true,
@@ -60,6 +62,15 @@ export default {
     },
     async updatePatient(context, updatedPatientData) {
       try {
+        updatedPatientData = {
+          ...updatedPatientData,
+          gender: genderParser(updatedPatientData.gender, true),
+          marital_status: maritalStatusParser(
+            updatedPatientData.marital_status,
+            true
+          ),
+        };
+
         const response = await patients.updatePatient(updatedPatientData);
         context.commit("PATIENT_DATA_UPDATED", response);
         router.push({
@@ -87,7 +98,7 @@ export default {
         return [
           { name: "Documento Tipo", value: patientData.id_type.name },
           { name: "Número", value: patientData.id_number },
-          { name: "Fecha de Nacimiento", value: patientData.born_date },
+          { name: "Fecha de Nacimiento", value: patientData.birthdate },
           { name: "Nombre", value: patientData.first_name },
           { name: "Apellido", value: patientData.last_name },
           { name: "Edad", value: patientData.age },

@@ -10,9 +10,9 @@ export default {
     try {
       const route = `${domainConfig}/api/user/patient`;
       const patientData = await sessionHelper(`${route}/${userId}`, "GET");
-      return patientData.length > 0
-        ? Object.assign({}, patientData[0].user_data, {
-            medical_record: patientData[0].medical_record,
+      return patientData
+        ? Object.assign({}, patientData.user_data, {
+            medical_record: patientData.medical_record,
           })
         : null;
     } catch (error) {

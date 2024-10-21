@@ -96,7 +96,7 @@ export default {
     fieldRefs: {
       id_types: "",
       id_number: "",
-      born_date: "",
+      birthdate: "",
       first_name: "",
       last_name: "",
       age: "",
@@ -184,7 +184,7 @@ export default {
     if (this.update === "true") {
       this.fieldRefs.id_types = this.patientData.id_type.id;
       this.fieldRefs.id_number = this.patientData.id_number;
-      this.fieldRefs.born_date = this.dateParser(this.patientData.born_date, true);
+      this.fieldRefs.birthdate = this.dateParser(this.patientData.birthdate, true);
       this.fieldRefs.first_name = this.patientData.first_name;
       this.fieldRefs.last_name = this.patientData.last_name;
       this.fieldRefs.age = this.patientData.age;
