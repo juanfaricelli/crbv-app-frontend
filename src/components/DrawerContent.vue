@@ -48,7 +48,7 @@
         v-if="isAdminOrDoctor"
         block
         class="drawer-content__btn--primary mb-2"
-        @click="showAlert"
+        @click="$router.push({ name: 'patient-medical-record', params: { patientId: patientIdEntry } })"
       >
         Ver HC
       </v-btn>

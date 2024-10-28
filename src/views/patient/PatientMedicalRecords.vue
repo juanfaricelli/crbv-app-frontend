@@ -1,6 +1,6 @@
 <template>
   <div class="patient-medical-records">
-    <h1>Patient Medical Records</h1>
+    <h1>Patient Medical Records for ID: {{ patientId }}</h1>
     <!-- Add your component template here -->
   </div>
 </template>
@@ -17,6 +17,9 @@ export default {
     // Add your component methods here
   },
   computed: {
+    patientId() {
+      return this.$route.params.patientId;
+    }
     // Add your computed properties here
   },
   mounted() {
