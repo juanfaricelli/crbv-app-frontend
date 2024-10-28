@@ -27,7 +27,7 @@
         label="ID Paciente"
         prepend-icon="$account"
         variant="outlined"
-        v-model="patientId"
+        v-model="patientIdEntry"
         @keyup.enter="searchPatient"
       ></v-text-field>
       <v-btn
@@ -92,7 +92,7 @@ export default {
   name: "DrawerContainer",
   data() {
     return {
-      patientId: "",
+      patientIdEntry: "",
     };
   },
   computed: {
@@ -101,12 +101,25 @@ export default {
       isDoctor: "auth/getIsDoctor",
       isStaff: "auth/getIsStaff",
     }),
+    patientId() {
+      return this.$route.params.patientId;
+    },
     isAdminOrStaff() {
       return this.isAdmin || this.isStaff;
     },
     isAdminOrDoctor() {
       return this.isAdmin || this.isDoctor;
     },
+  },
+  watch: {
+    patientId(newPatientId) {
+      this.patientIdEntry = newPatientId;
+    }
+  },
+  async created() {
+    if (this.patientIdEntry !== "") {
+      await this.getPatientById(this.patientIdEntry);
+    }
   },
   methods: {
     ...mapActions({
@@ -116,14 +129,13 @@ export default {
       logoutAction: "auth/logout",
     }),
     searchPatient() {
-      const { patientId } = this;
-      if (this.patientId !== "") {
+      if (this.patientIdEntry !== "") {
         this.setComponentLoading(true);
-        this.getPatientById(patientId);
-        this.setPatientIdSearched(patientId);
+        this.getPatientById(this.patientIdEntry);
+        this.setPatientIdSearched(this.patientIdEntry);
         this.$router.push({
           name: "patient-info",
-          params: { patientId },
+          params: { patientId: this.patientIdEntry },
         });
       }
     },

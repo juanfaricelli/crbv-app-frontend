@@ -51,6 +51,15 @@ const routes = [
           content: () => import("@/views/patient/PatientDataForm.vue"),
         },
       },
+      {
+        path: "/patient/medical-record/:patientId",
+        name: "patient-medical-record",
+        meta: { needsAuth: true },
+        props: true,
+        components: {
+          content: () => import("@/views/patient/PatientMedicalRecords.vue"),
+        },
+      },
     ],
   },
   {
