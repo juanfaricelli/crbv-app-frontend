@@ -62,7 +62,7 @@ export default {
   },
   async created() {
     await this.getPatientNewForm();
-    if (this.patientId !== "") {
+    if (this.patientId  && this.patientId !== "") {
       await this.getPatientById(this.patientId);
     }
   },

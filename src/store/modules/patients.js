@@ -26,7 +26,7 @@ export default {
   actions: {
     async getPatientById(context, patientId) {
       try {
-        if (!patientId) throw error;
+        if (!patientId) throw new Error("No patientId provided");
         context.commit("app/IS_FETCHING_UPDATED", true, { root: true });
         const response = await patients.getPatientById(patientId);
         context.commit("PATIENT_DATA_UPDATED", response);
