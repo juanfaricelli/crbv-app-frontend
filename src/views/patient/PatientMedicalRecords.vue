@@ -1,21 +1,48 @@
 <template>
   <div class="patient-medical-records">
-    <v-progress-circular
-      v-if="isFetching"
-      indeterminate
-      size="64"
-      color="#85B1CC"
-    ></v-progress-circular>
+    <div v-if="isFetching" class="patient-medical-records__spinner-wrapper">
+      <v-progress-circular
+        class="patient-medical-records__spinner"
+        indeterminate
+        size="64"
+        color="#85B1CC"
+      ></v-progress-circular>
+    </div>
     <template v-else>
       <PatientNotFound v-if="!patientExists" />
       <v-container v-else>
-        <v-card variant="tonal" color="#85B1CC">
+        <v-card
+          variant="tonal"
+          color="#85B1CC"
+          class="d-flex align-center justify-space-between pa-5"
+        >
           <v-card-text class="text-left">
             <h1 class="mb-3">Paciente: {{ fullName }}</h1>
             <h2>ID: {{ patientId }}</h2>
-            <h3>Legajo:</h3>
+            <h3>Legajo: {{ patientData.medical_record.toUpperCase() }}</h3>
           </v-card-text>
+          <v-card-actions class="d-flex align-center">
+            <v-btn
+              icon
+              variant="elevated"
+              color="blue"
+              @click="redirectToNewEntry"
+            >
+              <v-icon :icon="isMedicalRecordPage ? '$list' : '$plus'"></v-icon>
+            </v-btn>
+            <v-btn
+              icon
+              variant="elevated"
+              color="amber"
+              @click="redirectToHistory"
+            >
+              <v-icon icon="$file"></v-icon>
+            </v-btn>
+          </v-card-actions>
         </v-card>
+        <router-view
+          :fullName="fullName"
+        ></router-view>
       </v-container>
     </template>
   </div>
@@ -49,18 +76,43 @@ export default {
     patientId() {
       return this.$route.params.patientId;
     },
+    isMedicalRecordPage() {
+      return this.$route.name === "patient-medical-record-new-entry";
+    },
     // Add your computed properties here
   },
   created() {
-    console.log('created')
+    console.log("created");
   },
   methods: {
+    redirectToNewEntry() {
+      if (this.isMedicalRecordPage) {
+        this.$router.push({ name: "patient-medical-record" });
+        return;
+      }
+      this.$router.push({ name: "patient-medical-record-new-entry" });
+    },
+    redirectToHistory() {
+      this.$router.push({ name: "patient-medical-record-history" });
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .patient-medical-records {
-  /* Add your component styles here */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  &__spinner {
+    margin: 0 auto;
+    &-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+  }
 }
 </style>

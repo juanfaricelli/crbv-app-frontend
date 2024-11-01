@@ -1,6 +1,6 @@
 // Composables
-import store from '@/store';
-import { createRouter, createWebHistory } from 'vue-router'
+import store from "@/store";
+import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   {
@@ -59,6 +59,22 @@ const routes = [
         components: {
           content: () => import("@/views/patient/PatientMedicalRecords.vue"),
         },
+        children: [
+          {
+            path: "new-entry",
+            name: "patient-medical-record-new-entry",
+            component: () =>
+              import("@/components/medical-record/MedicalRecordForm.vue"),
+            props: true,
+          },
+          {
+            path: "history",
+            name: "patient-medical-record-history",
+            component: () =>
+              import("@/views/patient/PatientMedicalRecords.vue"),
+            props: true,
+          },
+        ],
       },
     ],
   },
@@ -87,7 +103,7 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
-})
+});
 
 // before navigating to a page this is executed
 router.beforeEach((to, from, next) => {
@@ -100,4 +116,4 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-export default router
+export default router;
