@@ -40,9 +40,7 @@
             </v-btn>
           </v-card-actions>
         </v-card>
-        <router-view
-          :fullName="fullName"
-        ></router-view>
+        <router-view :fullName="fullName"></router-view>
       </v-container>
     </template>
   </div>

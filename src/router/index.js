@@ -66,6 +66,18 @@ const routes = [
             component: () =>
               import("@/components/medical-record/MedicalRecordForm.vue"),
             props: true,
+            beforeEnter: (to, from, next) => {
+              // Perform the request before entering the route
+              store
+                .dispatch("medicalRecords/getPatientConditions")
+                .then(() => {
+                  next(); // Proceed to the route
+                })
+                .catch((error) => {
+                  console.error("Failed to fetch patient conditions:", error);
+                  next(false); // Abort navigation
+                });
+            },
           },
           {
             path: "history",

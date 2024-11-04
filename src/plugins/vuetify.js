@@ -5,18 +5,20 @@
  */
 
 // Styles
-import '@mdi/font/css/materialdesignicons.css'
-import 'vuetify/styles'
+import "@mdi/font/css/materialdesignicons.css";
+import "vuetify/styles";
 
 // Composables
 import { createVuetify } from "vuetify";
-import { aliases, mdi } from "vuetify/iconsets/mdi-svg"
-import icons from './iconsMdi'
+import { aliases, mdi } from "vuetify/iconsets/mdi-svg";
+import icons from "./iconsMdi";
 
 const aliasesObj = {
   ...aliases,
   ...icons,
 };
+
+import { VDateInput } from "vuetify/labs/VDateInput";
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
@@ -36,5 +38,8 @@ export default createVuetify({
     sets: {
       mdi,
     },
+  },
+  components: {
+    VDateInput,
   },
 });

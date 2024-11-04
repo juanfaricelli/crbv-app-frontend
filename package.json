@@ -23,11 +23,11 @@
     "dotenv": "^16.4.5",
     "roboto-fontface": "*",
     "unplugin-fonts": "^1.0.3",
+    "vite-plugin-vue-devtools": "^7.4.6",
     "vue": "^3.2.0",
     "vue-router": "^4.0.0",
-    "vuetify": "^3.0.0",
-    "vuex": "^4.1.0",
-    "vite-plugin-vue-devtools": "^7.4.6"
+    "vuetify": "^3.7.3",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "eslint": "^8.22.0",

@@ -177,6 +177,16 @@ export default {
           return "_id";
       }
     },
+    calculateAge(birthdate) {
+      const birthDate = new Date(birthdate);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDifference = today.getMonth() - birthDate.getMonth();
+      if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      this.fieldRefs.age = age;
+    },
   },
   created() {
     this.setComponentLoading(true);
@@ -242,7 +252,15 @@ export default {
       handler(value) {
         if(value === '') this.fieldRefs.id_number = '';
       },
-    }
+    },
+    'fieldRefs.birthdate': {
+      immediate: true,
+      handler(newVal) {
+        if (newVal) {
+          this.calculateAge(newVal);
+        }
+      },
+    },
   },
 };
 </script>
