@@ -17,4 +17,18 @@ export default {
       return [];
     }
   },
+  async postMedicalRecordEntry(payload) {
+    try {
+      
+      // setSessionToken();
+      const route = `${domainConfig}/api/medical-record/create`;
+      const newEntry = await sessionHelper(route, "POST", {
+        body: JSON.stringify(payload),
+      });
+      return newEntry;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  },
 };

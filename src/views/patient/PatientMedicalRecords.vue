@@ -79,9 +79,6 @@ export default {
     },
     // Add your computed properties here
   },
-  created() {
-    console.log("created");
-  },
   methods: {
     redirectToNewEntry() {
       if (this.isMedicalRecordPage) {
