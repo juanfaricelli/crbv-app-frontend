@@ -5,11 +5,15 @@ export default {
   state() {
     return {
       patientConditions: [],
+      medicalRecords: [],
     };
   },
   mutations: {
     PATIENT_CONDITIONS_UPDATED(state, patientConditions) {
       state.patientConditions = patientConditions;
+    },
+    PATIENT_MEDICAL_RECORDS_UPDATED(state, medicalRecords) {
+      state.medicalRecords = medicalRecords;
     },
   },
   actions: {
@@ -40,10 +44,27 @@ export default {
         root: true,
       });
     },
+    async getMedicalRecords(context, patientId) {
+      try {
+        context.commit("app/IS_FETCHING_UPDATED", true, { root: true });
+        const reponse = await medicalRecords.getMedicalRecordEntries(patientId);
+        context.commit("PATIENT_MEDICAL_RECORDS_UPDATED", reponse);
+        return reponse;
+      } catch (error) {
+        console.error("medicalRecords error", error);
+        context.commit("PATIENT_MEDICAL_RECORDS_UPDATED", []);
+      }
+      context.commit("app/IS_FETCHING_UPDATED", false, {
+        root: true,
+      });
+    },
   },
   getters: {
     getPatientConditions(state) {
       return state.patientConditions;
+    },
+    getMedicalRecords(state) {
+      return state.medicalRecords;
     },
   },
 };

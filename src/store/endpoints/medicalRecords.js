@@ -19,12 +19,22 @@ export default {
   },
   async postMedicalRecordEntry(payload) {
     try {
-      
       // setSessionToken();
       const route = `${domainConfig}/api/medical-record/create`;
       const newEntry = await sessionHelper(route, "POST", {
         body: JSON.stringify(payload),
       });
+      return newEntry;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  },
+  async getMedicalRecordEntries(patiendId) {
+    try {
+      // setSessionToken();
+      const route = `${domainConfig}/api/medical-record/${patiendId}`;
+      const newEntry = await sessionHelper(route, "GET");
       return newEntry;
     } catch (error) {
       console.error(error);

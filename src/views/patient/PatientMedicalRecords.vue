@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 import PatientNotFound from "@/views/patient/PatientNotFound.vue";
 
 export default {
@@ -62,6 +62,7 @@ export default {
     ...mapGetters({
       patientIdSearched: "patients/getPatientIdSearched",
       isFetching: "app/getIsFetchingState",
+      medicalRecordsGetter: "medicalRecords/getMedicalRecords",
     }),
     fullName() {
       return this.patientData
@@ -79,7 +80,13 @@ export default {
     },
     // Add your computed properties here
   },
+  created() {
+    this.getMedicalRecordsAction(this.patientId);
+  },
   methods: {
+    ...mapActions({
+      getMedicalRecordsAction: "medicalRecords/getMedicalRecords",
+    }),
     redirectToNewEntry() {
       if (this.isMedicalRecordPage) {
         this.$router.push({ name: "patient-medical-record" });
