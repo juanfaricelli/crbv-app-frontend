@@ -82,10 +82,12 @@ export default {
   },
   created() {
     this.getMedicalRecordsAction(this.patientId);
+    this.getPatientConditionsAction();
   },
   methods: {
     ...mapActions({
       getMedicalRecordsAction: "medicalRecords/getMedicalRecords",
+      getPatientConditionsAction: "medicalRecords/getPatientConditions",
     }),
     redirectToNewEntry() {
       if (this.isMedicalRecordPage) {

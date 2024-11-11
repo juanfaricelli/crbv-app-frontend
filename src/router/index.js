@@ -59,14 +59,22 @@ const routes = [
         components: {
           content: () => import("@/views/patient/PatientMedicalRecords.vue"),
         },
+        redirect: { name: "patient-medical-record-list" }, // Redirect to the default child route
         children: [
+          {
+            path: "",
+            name: "patient-medical-record-list",
+            component: () =>
+              import("@/components/medical-record/MedicalRecordsList.vue"),
+            props: true,
+          },
           {
             path: "new-entry",
             name: "patient-medical-record-new-entry",
             component: () =>
               import("@/components/medical-record/MedicalRecordForm.vue"),
             props: true,
-            beforeEnter: (to, from, next) => {
+            /*             beforeEnter: (to, from, next) => {
               // Perform the request before entering the route
               store
                 .dispatch("medicalRecords/getPatientConditions")
@@ -77,7 +85,7 @@ const routes = [
                   console.error("Failed to fetch patient conditions:", error);
                   next(false); // Abort navigation
                 });
-            },
+            }, */
           },
           {
             path: "history",
