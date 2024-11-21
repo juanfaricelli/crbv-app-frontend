@@ -55,13 +55,22 @@ export default {
     drawer: false,
     group: null,
   }),
-  methods: {
-    ...mapActions({
-      getPatientNewForm: "patients/getPatientNewForm",
-    }),
+  computed: {
+    patientId() {
+      return this.$route.params.patientId;
+    },
   },
   async created() {
     await this.getPatientNewForm();
+    if (this.patientId  && this.patientId !== "") {
+      await this.getPatientById(this.patientId);
+    }
+  },
+  methods: {
+    ...mapActions({
+      getPatientNewForm: "patients/getPatientNewForm",
+      getPatientById: "patients/getPatientById",
+    }),
   },
   watch: {
     group() {

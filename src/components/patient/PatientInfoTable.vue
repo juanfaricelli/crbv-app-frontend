@@ -6,21 +6,7 @@
           <strong>{{ item.name }}</strong>
         </td>
         <td class="text-left">
-          <template v-if="isClinicHistory(item)">
-            <v-tooltip
-              location="top"
-              origin="auto"
-              no-click-animation
-              :text="item.value.toUpperCase()"
-              >
-              <template v-slot:activator="{ props }">
-                {{ valueToShow(item) }} <v-icon v-bind="props" icon="$info"></v-icon>
-              </template>
-            </v-tooltip>
-          </template>
-          <template v-else>
-            {{ valueToShow(item) }}
-          </template>
+          {{ valueToShow(item) }}
         </td>
       </tr>
     </tbody>
@@ -54,10 +40,6 @@ export default {
           return this.genderParser(item.value)
         case 'Estado Civil':
           return this.maritalStatusParser(item.value)
-        // case 'Localidad':
-        //   return this.locationParser(item)
-        case 'Historia Clinica':
-          return item.value.slice(-6).toUpperCase()
         case 'Obra Social':
           return this.healthInsuraceParser(item.value)
         default:
@@ -66,9 +48,6 @@ export default {
             : item.value;
       }
     },
-    isClinicHistory(item) {
-      return item.name === 'Historia Clinica'
-    }
   },
 };
 </script>

@@ -2,11 +2,12 @@
 import store from "@/store";
 import router from "@/router";
 
-export async function sessionHelper(url, method, options = {}) {
+export async function sessionHelper(url, method = "GET", options = {}) {
   const sessionId = localStorage.getItem("sessionId") || "";
   const Authorization = `Bearer ${sessionId}`;
 
   const defaultOptions = {
+    method,
     headers: {
       "Content-Type": "application/json",
       Authorization,

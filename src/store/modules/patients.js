@@ -26,14 +26,14 @@ export default {
   actions: {
     async getPatientById(context, patientId) {
       try {
-        if (!patientId) throw error;
-        context.commit("app/IS_FETCHING_UPDATED", true, { root: true });
+        if (!patientId) throw new Error("No patientId provided");
+        context.commit("app/IS_FETCHING_PATIENT_UPDATED", true, { root: true });
         const response = await patients.getPatientById(patientId);
         context.commit("PATIENT_DATA_UPDATED", response);
       } catch (error) {
         console.error("getPatientById error", error);
       }
-      context.commit("app/IS_FETCHING_UPDATED", false, { root: true });
+      context.commit("app/IS_FETCHING_PATIENT_UPDATED", false, { root: true });
     },
     setPatientIdSearched(context, patientIdSearched) {
       context.commit("PATIENT_ID_SEARCHED_UPDATED", patientIdSearched);
@@ -62,15 +62,6 @@ export default {
     },
     async updatePatient(context, updatedPatientData) {
       try {
-        updatedPatientData = {
-          ...updatedPatientData,
-          gender: genderParser(updatedPatientData.gender, true),
-          marital_status: maritalStatusParser(
-            updatedPatientData.marital_status,
-            true
-          ),
-        };
-
         const response = await patients.updatePatient(updatedPatientData);
         context.commit("PATIENT_DATA_UPDATED", response);
         router.push({
@@ -117,7 +108,6 @@ export default {
           { name: "Piso", value: patientData.flat },
           { name: "Depto", value: patientData.flat_num },
           { name: "Grupo Sanguineo", value: patientData.blood_type },
-          { name: "Historia Clinica", value: patientData.medical_record },
         ];
       } else {
         return null;

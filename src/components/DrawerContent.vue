@@ -27,13 +27,13 @@
         label="ID Paciente"
         prepend-icon="$account"
         variant="outlined"
-        v-model="patientId"
-        @keyup.enter="searchPatient"
+        v-model="patientIdEntry"
+        @keyup.enter="patientInfo"
       ></v-text-field>
       <v-btn
         block
         class="drawer-content__btn--primary mb-2"
-        @click="searchPatient"
+        @click="patientInfo"
       >
         Buscar Paciente
       </v-btn>
@@ -48,7 +48,7 @@
         v-if="isAdminOrDoctor"
         block
         class="drawer-content__btn--primary mb-2"
-        @click="showAlert"
+        @click="goToPatientMedicalRecord"
       >
         Ver HC
       </v-btn>
@@ -87,26 +87,44 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   name: "DrawerContainer",
   data() {
     return {
-      patientId: "",
+      patientIdEntry: "",
     };
   },
   computed: {
+    ...mapState({
+      patientIdSearched: (state) => state.patients.patientIdSearched,
+      patientData: (state) => state.patients.patientData,
+    }),
     ...mapGetters({
       isAdmin: "auth/getIsAdministrator",
       isDoctor: "auth/getIsDoctor",
       isStaff: "auth/getIsStaff",
     }),
+    patientId() {
+      return this.$route.params.patientId;
+    },
     isAdminOrStaff() {
       return this.isAdmin || this.isStaff;
     },
     isAdminOrDoctor() {
       return this.isAdmin || this.isDoctor;
     },
+  },
+  watch: {
+    patientId(newPatientId) {
+      this.patientIdEntry = newPatientId;
+    },
+  },
+  async created() {
+    if (this.patientIdSearched) {
+      this.patientIdEntry = this.patientIdSearched;
+      await this.getPatientById(this.patientIdEntry);
+    }
   },
   methods: {
     ...mapActions({
@@ -116,14 +134,45 @@ export default {
       logoutAction: "auth/logout",
     }),
     searchPatient() {
-      const { patientId } = this;
-      if (this.patientId !== "") {
-        this.setComponentLoading(true);
-        this.getPatientById(patientId);
-        this.setPatientIdSearched(patientId);
+      // Ensure patientIdEntry is not empty
+      if (!this.patientIdEntry) {
+        return false;
+      }
+
+      const trimmedPatientIdEntry = this.patientIdEntry.trim();
+
+      // Check if patientIdEntry is not empty
+      if (trimmedPatientIdEntry === "") {
+        return false;
+      }
+
+      // Check if patientData is not populated
+      if (!this.patientData) {
+        this.getPatientById(trimmedPatientIdEntry);
+        this.setPatientIdSearched(trimmedPatientIdEntry);
+        return true;
+      }
+
+      // Check if patientData.id_number is the same as patientIdEntry
+      if (String(this.patientData.id_number) === trimmedPatientIdEntry) {
+        return true;
+      }
+
+      // If patientData is populated and id_number is different, make the request
+      if (
+        this.patientData &&
+        String(this.patientData.id_number) !== trimmedPatientIdEntry
+      ) {
+        this.getPatientById(trimmedPatientIdEntry);
+        this.setPatientIdSearched(trimmedPatientIdEntry);
+        return true;
+      }
+    },
+    patientInfo() {
+      if (this.searchPatient()) {
         this.$router.push({
           name: "patient-info",
-          params: { patientId },
+          params: { patientId: this.patientIdEntry },
         });
       }
     },
@@ -132,6 +181,14 @@ export default {
       this.setPatientIdSearched("");
       this.$store.commit("patients/PATIENT_DATA_UPDATED", "");
       this.$router.push({ name: "patient-new" });
+    },
+    goToPatientMedicalRecord() {
+      if (this.searchPatient()) {
+        this.$router.push({
+          name: "patient-medical-record",
+          params: { patientId: this.patientIdEntry },
+        });
+      }
     },
     showAlert() {
       alert("Alerta de prueba");

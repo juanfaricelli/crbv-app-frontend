@@ -1,6 +1,6 @@
 // Composables
-import store from '@/store';
-import { createRouter, createWebHistory } from 'vue-router'
+import store from "@/store";
+import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   {
@@ -51,6 +51,55 @@ const routes = [
           content: () => import("@/views/patient/PatientDataForm.vue"),
         },
       },
+      {
+        path: "/patient/medical-record/:patientId",
+        name: "patient-medical-record",
+        meta: { needsAuth: true },
+        props: true,
+        components: {
+          content: () => import("@/views/patient/PatientMedicalRecords.vue"),
+        },
+        redirect: { name: "patient-medical-record-list" }, // Redirect to the default child route
+        children: [
+          {
+            path: "",
+            name: "patient-medical-record-list",
+            components: {
+              subContent: () =>
+                import("@/components/medical-record/MedicalRecordsList.vue"),
+            },
+            props: true,
+          },
+          {
+            path: "new-entry",
+            name: "patient-medical-record-new-entry",
+            components: {
+              subContent: () =>
+                import("@/components/medical-record/MedicalRecordForm.vue"),
+            },
+            props: true,
+            /*             beforeEnter: (to, from, next) => {
+              // Perform the request before entering the route
+              store
+                .dispatch("medicalRecords/getPatientConditions")
+                .then(() => {
+                  next(); // Proceed to the route
+                })
+                .catch((error) => {
+                  console.error("Failed to fetch patient conditions:", error);
+                  next(false); // Abort navigation
+                });
+            }, */
+          },
+          {
+            path: "history",
+            name: "patient-medical-record-history",
+            component: () =>
+              import("@/views/patient/PatientMedicalRecords.vue"),
+            props: true,
+          },
+        ],
+      },
     ],
   },
   {
@@ -78,7 +127,7 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
-})
+});
 
 // before navigating to a page this is executed
 router.beforeEach((to, from, next) => {
@@ -91,4 +140,4 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-export default router
+export default router;
