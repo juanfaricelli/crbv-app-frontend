@@ -1,25 +1,16 @@
 <template>
   <v-card
-    :loading="isComponentLoading"
+    :loading="isFetchingPatient"
     :title="
-      isComponentLoading
+      isFetchingPatient
         ? 'Cargando datos del paciente...'
         : patientData && patientData.first_name
         ? `Datos del Paciente: ${patientData.first_name} ${patientData.last_name}`
         : ''
     "
   >
-    <v-card-text class="patient-info__bg-color">
-      <template v-if="isComponentLoading">
-        <v-container class="patient-info__bg-color">
-          <v-row no-gutters>
-            <v-col>
-              <PatientInfoTable />
-            </v-col>
-          </v-row>
-        </v-container>
-      </template>
-      <template v-if="!isComponentLoading && patientExists">
+    <v-card-text v-model="patientData.id_number" class="patient-info__bg-color">
+      <template v-if="!isFetchingPatient && patientExists">
         <v-container class="patient-info__bg-color">
           <v-row no-gutters>
             <v-col>
@@ -43,7 +34,7 @@
           </v-row>
         </v-container>
       </template>
-      <template v-if="!isComponentLoading && !patientExists">
+      <template v-if="!isFetchingPatient && !patientExists">
         <h3 class="mb-6">
           Paciente con ID {{ patientIdSearched }} no encontrado
         </h3>
@@ -60,7 +51,7 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import PatientInfoTable from "@/components/patient/PatientInfoTable.vue";
 
 export default {
@@ -77,14 +68,12 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      isFetching: (state) => state.app.isFetching,
-      isComponentLoading: (state) => state.app.isComponentLoading,
-      patientData: (state) => state.patients.patientData,
-    }),
     ...mapGetters({
       parsedPatientInfo: "patients/getParsedPatientInfo",
       patientIdSearched: "patients/getPatientIdSearched",
+      patientData: "patients/getPatientById",
+      isFetching: "app/getIsFetchingState",
+      isFetchingPatient: "app/getIsFetchingPatientState",
     }),
     patientExists() {
       return this.patientData && this.patientData.id_number;
@@ -92,6 +81,14 @@ export default {
     showMobile() {
       const { sm } = this.$vuetify.display;
       return sm;
+    },
+  },
+  watch: {
+    isFetchingPatient: {
+      immediate: true,
+      handler(value) {
+        this.setParsedPatientInfo();
+      },
     },
   },
   methods: {
@@ -125,18 +122,6 @@ export default {
         name: "patient-update",
         params: { patientId: this.patientData.id_number, update: true },
       });
-    },
-  },
-  watch: {
-    isFetching: {
-      immediate: true,
-      handler(value) {
-        this.setComponentLoading(true);
-        if (!value) {
-          this.setParsedPatientInfo();
-          this.setComponentLoading(false);
-        }
-      },
     },
   },
 };

@@ -64,15 +64,19 @@ const routes = [
           {
             path: "",
             name: "patient-medical-record-list",
-            component: () =>
-              import("@/components/medical-record/MedicalRecordsList.vue"),
+            components: {
+              subContent: () =>
+                import("@/components/medical-record/MedicalRecordsList.vue"),
+            },
             props: true,
           },
           {
             path: "new-entry",
             name: "patient-medical-record-new-entry",
-            component: () =>
-              import("@/components/medical-record/MedicalRecordForm.vue"),
+            components: {
+              subContent: () =>
+                import("@/components/medical-record/MedicalRecordForm.vue"),
+            },
             props: true,
             /*             beforeEnter: (to, from, next) => {
               // Perform the request before entering the route

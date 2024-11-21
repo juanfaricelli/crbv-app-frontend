@@ -27,13 +27,13 @@ export default {
     async getPatientById(context, patientId) {
       try {
         if (!patientId) throw new Error("No patientId provided");
-        context.commit("app/IS_FETCHING_UPDATED", true, { root: true });
+        context.commit("app/IS_FETCHING_PATIENT_UPDATED", true, { root: true });
         const response = await patients.getPatientById(patientId);
         context.commit("PATIENT_DATA_UPDATED", response);
       } catch (error) {
         console.error("getPatientById error", error);
       }
-      context.commit("app/IS_FETCHING_UPDATED", false, { root: true });
+      context.commit("app/IS_FETCHING_PATIENT_UPDATED", false, { root: true });
     },
     setPatientIdSearched(context, patientIdSearched) {
       context.commit("PATIENT_ID_SEARCHED_UPDATED", patientIdSearched);

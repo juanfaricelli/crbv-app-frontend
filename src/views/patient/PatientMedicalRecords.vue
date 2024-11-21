@@ -1,6 +1,6 @@
 <template>
   <div class="patient-medical-records">
-    <div v-if="isFetching" class="patient-medical-records__spinner-wrapper">
+    <div v-if="isFetchingPatient" class="patient-medical-records__spinner-wrapper">
       <v-progress-circular
         class="patient-medical-records__spinner"
         indeterminate
@@ -19,7 +19,7 @@
           <v-card-text class="text-left">
             <h1 class="mb-3">Paciente: {{ fullName }}</h1>
             <h2>ID: {{ patientId }}</h2>
-            <h3>Legajo: {{ patientData.medical_record.toUpperCase() }}</h3>
+            <h3>Observaciones Realizadas</h3>
           </v-card-text>
           <v-card-actions class="d-flex align-center">
             <v-btn
@@ -40,7 +40,7 @@
             </v-btn>
           </v-card-actions>
         </v-card>
-        <router-view :fullName="fullName"></router-view>
+        <router-view name="subContent" :fullName="fullName"></router-view>
       </v-container>
     </template>
   </div>
@@ -62,7 +62,8 @@ export default {
     ...mapGetters({
       patientIdSearched: "patients/getPatientIdSearched",
       isFetching: "app/getIsFetchingState",
-      medicalRecordsGetter: "medicalRecords/getMedicalRecords",
+      isFetchingPatient: "app/getIsFetchingPatientState",
+      medicalRecordsGetter: "medicalRecords/getMedicalRecordsGetter",
     }),
     fullName() {
       return this.patientData
@@ -73,7 +74,7 @@ export default {
       return (this.patientData && this.patientData.id_number) || false;
     },
     patientId() {
-      return this.$route.params.patientId;
+      return this.patientData.id_number;
     },
     isMedicalRecordPage() {
       return this.$route.name === "patient-medical-record-new-entry";
@@ -84,9 +85,16 @@ export default {
     this.getMedicalRecordsAction(this.patientId);
     this.getPatientConditionsAction();
   },
+  watch: {
+    patientId(newId, oldId) {
+      if (newId !== oldId) {
+        this.getMedicalRecordsAction(newId);
+      }
+    },
+  },
   methods: {
     ...mapActions({
-      getMedicalRecordsAction: "medicalRecords/getMedicalRecords",
+      getMedicalRecordsAction: "medicalRecords/getMedicalRecordsAction",
       getPatientConditionsAction: "medicalRecords/getPatientConditions",
     }),
     redirectToNewEntry() {

@@ -121,7 +121,16 @@
             @input="resetError('comments')"
           ></v-textarea>
 
-          <v-btn color="success" @click="saveEntry"> Guardar </v-btn>
+          <v-btn v-if="!isLoading" color="success" @click="saveEntry">
+            Guardar
+          </v-btn>
+          <v-progress-circular
+            v-else
+            class="medical-records-list__spinner"
+            indeterminate
+            size="64"
+            color="#85B1CC"
+          ></v-progress-circular>
         </v-card-text>
       </v-card>
     </v-container>
@@ -166,6 +175,7 @@ export default {
         recoveredDate: { hasError: false, message: "" },
       },
       formSubmitted: false,
+      isLoading: false,
     };
   },
   props: {
@@ -226,7 +236,10 @@ export default {
     this.form.patientCondition = this.patientConditions[0]._id;
   },
   methods: {
-    ...mapActions("medicalRecords", ["medicalRecordEntryCreate"]),
+    ...mapActions("medicalRecords", [
+      "medicalRecordEntryCreate",
+      "getMedicalRecordsAction",
+    ]),
     handlePatientConditionSelection(event) {
       this.form.patientCondition = event.target.value;
     },
@@ -270,18 +283,22 @@ export default {
       );
     },
     async saveEntry() {
+      this.isLoading = true;
       this.formSubmitted = true;
       if (this.validateForm()) {
         this.form.patientId = this.patientData.id_number;
         const newEntry = await this.medicalRecordEntryCreate(this.form);
         if (newEntry && Object.keys(newEntry).length > 0) {
+          await this.getMedicalRecordsAction(this.patientData.id_number);
+          this.isLoading = false;
           this.$router.push({
             name: "patient-medical-record",
             params: { patientId: this.patientData.id_number },
           });
-            this.$store.commit("app/IS_FETCHING_UPDATED", false);
+          this.$store.commit("app/IS_FETCHING_UPDATED", false);
         }
       } else {
+        this.isLoading = false;
         this.formSubmitted = false;
       }
     },

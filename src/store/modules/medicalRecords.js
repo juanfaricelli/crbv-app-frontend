@@ -44,17 +44,20 @@ export default {
         root: true,
       });
     },
-    async getMedicalRecords(context, patientId) {
+    async getMedicalRecordsAction(context, patientId) {
       try {
-        context.commit("app/IS_FETCHING_UPDATED", true, { root: true });
+        context.commit("app/IS_FETCHING_MRS_UPDATED", true, { root: true });
         const reponse = await medicalRecords.getMedicalRecordEntries(patientId);
         context.commit("PATIENT_MEDICAL_RECORDS_UPDATED", reponse);
+        context.commit("app/IS_FETCHING_MRS_UPDATED", false, {
+          root: true,
+        });
         return reponse;
       } catch (error) {
         console.error("medicalRecords error", error);
         context.commit("PATIENT_MEDICAL_RECORDS_UPDATED", []);
       }
-      context.commit("app/IS_FETCHING_UPDATED", false, {
+      context.commit("app/IS_FETCHING_MRS_UPDATED", false, {
         root: true,
       });
     },
@@ -63,7 +66,7 @@ export default {
     getPatientConditions(state) {
       return state.patientConditions;
     },
-    getMedicalRecords(state) {
+    getMedicalRecordsGetter(state) {
       return state.medicalRecords;
     },
   },
