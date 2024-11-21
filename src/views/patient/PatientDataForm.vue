@@ -146,55 +146,16 @@ export default {
       return this.fieldRefs.province || null;
     },
   },
-  methods: {
-    ...mapActions({
-      setComponentLoading: "app/setComponentLoading",
-      createPatient: "patients/createPatient",
-      updatePatient: "patients/updatePatient",
-    }),
-    async validate() {
-      const { valid } = await this.$refs.form.validate();
-      if (valid) {
-        this.setComponentLoading(true);
-        if (this.update === 'true') {
-          await this.updatePatient(this.fieldRefs);
-        } else {
-          await this.createPatient(this.fieldRefs);
-        }
-      }
-    },
-    reset() {
-      this.$refs.form.reset();
-    },
-    dropdownValueType(dropdownField) {
-      switch (dropdownField) {
-        case "gender":
-        case "marital_status":
-          return "type";
-        case "blood_type":
-          return "name";
-        default:
-          return "_id";
-      }
-    },
-    calculateAge(birthdate) {
-      const birthDate = new Date(birthdate);
-      const today = new Date();
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDifference = today.getMonth() - birthDate.getMonth();
-      if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-      this.fieldRefs.age = age;
-    },
-  },
   created() {
     this.setComponentLoading(true);
     if (this.patientId) this.fieldRefs.id_number = this.patientId;
     if (this.update === "true") {
       this.fieldRefs.id_types = this.patientData.id_type.id;
       this.fieldRefs.id_number = this.patientData.id_number;
-      this.fieldRefs.birthdate = this.dateParser(this.patientData.birthdate, true);
+      this.fieldRefs.birthdate = this.dateParser(
+        this.patientData.birthdate,
+        true
+      );
       this.fieldRefs.first_name = this.patientData.first_name;
       this.fieldRefs.last_name = this.patientData.last_name;
       this.fieldRefs.age = this.patientData.age;
@@ -202,7 +163,9 @@ export default {
       this.fieldRefs.blood_type = this.patientData.blood_type;
       this.fieldRefs.health_insurance = this.patientData.health_insurance;
       this.fieldRefs.health_insurance_id = this.patientData.health_insurance_id;
-      this.fieldRefs.marital_status = this.maritalStatusParser(this.patientData.marital_status);
+      this.fieldRefs.marital_status = this.maritalStatusParser(
+        this.patientData.marital_status
+      );
       this.fieldRefs.nationality = this.patientData.nationality;
       this.fieldRefs.country = this.patientData.country;
       this.fieldRefs.province = this.patientData.province;
@@ -239,8 +202,9 @@ export default {
         ) {
           const selectedProvince =
             this.patientNewFormFields.province.options.find(
-              (prov) => prov.name === value || prov._id === value.id || prov._id === value
+              (prov) => prov._id === (value.id || value._id || value)
             );
+
           this.locationOptionsStatic = selectedProvince.cities || [
             "Seleccione provincia",
           ];
@@ -250,16 +214,103 @@ export default {
     patientIdSearched: {
       immediate: true,
       handler(value) {
-        if(value === '') this.fieldRefs.id_number = '';
+        if (value === "") this.fieldRefs.id_number = "";
       },
     },
-    'fieldRefs.birthdate': {
+    "fieldRefs.birthdate": {
       immediate: true,
       handler(newVal) {
         if (newVal) {
           this.calculateAge(newVal);
         }
       },
+    },
+  },
+  methods: {
+    ...mapActions({
+      setComponentLoading: "app/setComponentLoading",
+      createPatient: "patients/createPatient",
+      updatePatient: "patients/updatePatient",
+    }),
+    async validate() {
+      const { valid } = await this.$refs.form.validate();
+      if (valid) {
+        this.setComponentLoading(true);
+        if (typeof this.fieldRefs.province === "string") {
+          const provinceData = this.patientNewFormFields.province.options.find(
+            (prov) => prov._id === this.fieldRefs.province
+          );
+          this.fieldRefs.province = {
+            id: provinceData._id,
+            name: provinceData.name,
+          };
+        }
+        if (typeof this.fieldRefs.gender === "string") {
+          this.fieldRefs.gender = this.genderParser(
+            this.fieldRefs.gender,
+            true
+          );
+        }
+        if (typeof this.fieldRefs.marital_status === "string") {
+          this.fieldRefs.marital_status = this.maritalStatusParser(
+            this.fieldRefs.marital_status,
+            true
+          );
+        }
+        if (typeof this.fieldRefs.health_insurance === "string") {
+          const healthInsuranceData =
+            this.patientNewFormFields.health_insurance.options.find(
+              (insurance) => insurance._id === this.fieldRefs.health_insurance
+            );
+          this.fieldRefs.health_insurance = {
+            id: healthInsuranceData._id,
+            name: healthInsuranceData.name,
+          };
+        }
+        if (typeof this.fieldRefs.location === "string") {
+          const locationData = this.locationOptions.find(
+            (loc) => loc._id === this.fieldRefs.location
+          );
+          this.fieldRefs.location = {
+            id: locationData._id,
+            name: locationData.name,
+          };
+        }
+        this.fieldRefs.health_insurance_id =
+          this.fieldRefs.health_insurance_id.toString();
+        if (this.update === "true") {
+          await this.updatePatient(this.fieldRefs);
+        } else {
+          await this.createPatient(this.fieldRefs);
+        }
+      }
+    },
+    reset() {
+      this.$refs.form.reset();
+    },
+    dropdownValueType(dropdownField) {
+      switch (dropdownField) {
+        case "gender":
+        case "marital_status":
+          return "type";
+        case "blood_type":
+          return "name";
+        default:
+          return "_id";
+      }
+    },
+    calculateAge(birthdate) {
+      const birthDate = new Date(birthdate);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDifference = today.getMonth() - birthDate.getMonth();
+      if (
+        monthDifference < 0 ||
+        (monthDifference === 0 && today.getDate() < birthDate.getDate())
+      ) {
+        age--;
+      }
+      this.fieldRefs.age = age;
     },
   },
 };

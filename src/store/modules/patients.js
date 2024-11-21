@@ -62,15 +62,6 @@ export default {
     },
     async updatePatient(context, updatedPatientData) {
       try {
-        updatedPatientData = {
-          ...updatedPatientData,
-          gender: genderParser(updatedPatientData.gender, true),
-          marital_status: maritalStatusParser(
-            updatedPatientData.marital_status,
-            true
-          ),
-        };
-
         const response = await patients.updatePatient(updatedPatientData);
         context.commit("PATIENT_DATA_UPDATED", response);
         router.push({
@@ -117,7 +108,6 @@ export default {
           { name: "Piso", value: patientData.flat },
           { name: "Depto", value: patientData.flat_num },
           { name: "Grupo Sanguineo", value: patientData.blood_type },
-          { name: "Historia Clinica", value: patientData.medical_record },
         ];
       } else {
         return null;
